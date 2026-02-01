@@ -11,7 +11,11 @@ npm install
 npm run build
 ```
 
-## Configure Claude Code
+## Configuration
+
+The PDFCrowd API may take up to 60 seconds for complex documents. Configure an appropriate timeout for your CLI.
+
+### Claude Code
 
 Add to `~/.mcp.json`:
 
@@ -31,10 +35,42 @@ Add to `~/.mcp.json`:
 }
 ```
 
-The `timeout` (in milliseconds) sets how long Claude Code waits for PDF creation.
-The PDFCrowd API may take up to 60 seconds for complex documents, so 65000ms is recommended.
-
 Restart Claude Code to load the server.
+
+### Codex CLI
+
+Add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.pdfcrowd]
+command = "node"
+args = ["/absolute/path/to/pdfcrowd-mcp-server/dist/index.js"]
+tool_timeout_sec = 65
+
+[mcp_servers.pdfcrowd.env]
+PDFCROWD_USERNAME = "your_username"
+PDFCROWD_API_KEY = "your_api_key"
+```
+
+### Gemini CLI
+
+Add to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "pdfcrowd": {
+      "command": "node",
+      "args": ["/absolute/path/to/pdfcrowd-mcp-server/dist/index.js"],
+      "env": {
+        "PDFCROWD_USERNAME": "your_username",
+        "PDFCROWD_API_KEY": "your_api_key"
+      },
+      "timeout": 65000
+    }
+  }
+}
+```
 
 ## Credentials
 
