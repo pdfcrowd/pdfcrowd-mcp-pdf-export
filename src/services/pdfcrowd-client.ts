@@ -7,6 +7,20 @@ const API_HOST = "api.pdfcrowd.com";
 const API_VERSION = "24.04";
 const API_BASE_URL = `https://${API_HOST}/convert/${API_VERSION}`;
 
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 1000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function is5xxError(error: unknown): boolean {
+  return error instanceof AxiosError &&
+    error.response !== undefined &&
+    error.response.status >= 500 &&
+    error.response.status < 600;
+}
+
 export interface ConversionMetadata {
   jobId: string;
   remainingCredits: number;
@@ -85,30 +99,32 @@ function parseJsonError(data: Buffer | string): ApiErrorResponse | null {
   return null;
 }
 
-function handleApiError(error: unknown): ErrorResult {
+function handleApiError(error: unknown, attempts?: number): ErrorResult {
+  const suffix = attempts && attempts > 1 ? ` (after ${attempts} attempts)` : "";
+
   if (error instanceof AxiosError) {
     if (error.response) {
       const status = error.response.status;
       const jsonError = parseJsonError(error.response.data);
 
       if (jsonError) {
-        const msg = `PDFCrowd error ${jsonError.status_code} (reason ${jsonError.reason_code}): ${jsonError.message}`;
+        const msg = `PDFCrowd error ${jsonError.status_code} (reason ${jsonError.reason_code}): ${jsonError.message}${suffix}`;
         return { success: false, error: msg, httpCode: status };
       }
 
       // Fallback to string-based handling
       const message = error.response.data?.toString() || error.message;
-      return { success: false, error: `PDFCrowd API error (${status}): ${message}`, httpCode: status };
+      return { success: false, error: `PDFCrowd API error (${status}): ${message}${suffix}`, httpCode: status };
     } else if (error.code === "ECONNABORTED") {
-      return { success: false, error: "PDFCrowd request timed out." };
+      return { success: false, error: `PDFCrowd request timed out.${suffix}` };
     } else if (error.code === "ENOTFOUND") {
-      return { success: false, error: "PDFCrowd API unreachable. Check internet connection." };
+      return { success: false, error: `PDFCrowd API unreachable. Check internet connection.${suffix}` };
     }
   }
 
   return {
     success: false,
-    error: `PDFCrowd unexpected error: ${error instanceof Error ? error.message : String(error)}`
+    error: `PDFCrowd unexpected error: ${error instanceof Error ? error.message : String(error)}${suffix}`
   };
 }
 
@@ -123,59 +139,86 @@ export interface CreatePdfOptions {
   title?: string;
 }
 
-export async function createPdf(options: CreatePdfOptions): Promise<ConversionResult | ErrorResult> {
-  try {
-    const { username, apiKey } = getCredentials();
-    const form = new FormData();
+function buildForm(options: CreatePdfOptions): FormData {
+  const form = new FormData();
 
-    // Set input source
-    if (options.html) {
-      form.append("text", options.html);
-    } else if (options.url) {
-      form.append("url", options.url);
-    } else if (options.file) {
-      if (!fs.existsSync(options.file)) {
-        return { success: false, error: `File not found: ${options.file}` };
-      }
-      form.append("file", fs.createReadStream(options.file));
-    }
-
-    // Set options
-    if (options.pageSize) {
-      form.append("page_size", options.pageSize);
-    }
-    if (options.orientation) {
-      form.append("orientation", options.orientation);
-    }
-    if (options.noMargins) {
-      form.append("no_margins", "true");
-    }
-    if (options.title) {
-      form.append("title", options.title);
-    }
-
-    const response = await axios.post(`${API_BASE_URL}/?errfmt=json`, form, {
-      auth: { username, password: apiKey },
-      headers: form.getHeaders(),
-      responseType: "arraybuffer",
-      timeout: 120000
-    });
-
-    // Ensure output directory exists
-    const dir = path.dirname(options.outputPath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
-    fs.writeFileSync(options.outputPath, response.data);
-
-    return {
-      success: true,
-      outputPath: path.resolve(options.outputPath),
-      metadata: parseMetadata(response.headers),
-      isDemo: isDemo(username)
-    };
-  } catch (error) {
-    return handleApiError(error);
+  // Set input source
+  if (options.html) {
+    form.append("text", options.html);
+  } else if (options.url) {
+    form.append("url", options.url);
+  } else if (options.file) {
+    form.append("file", fs.createReadStream(options.file));
   }
+
+  // Set options
+  if (options.pageSize) {
+    form.append("page_size", options.pageSize);
+  }
+  if (options.orientation) {
+    form.append("orientation", options.orientation);
+  }
+  if (options.noMargins) {
+    form.append("no_margins", "true");
+  }
+  if (options.title) {
+    form.append("title", options.title);
+  }
+
+  return form;
+}
+
+export async function createPdf(options: CreatePdfOptions): Promise<ConversionResult | ErrorResult> {
+  // Validate file exists before attempting
+  if (options.file && !fs.existsSync(options.file)) {
+    return { success: false, error: `File not found: ${options.file}` };
+  }
+
+  const { username, apiKey } = getCredentials();
+  let lastError: unknown;
+  let attempts = 0;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+    attempts = attempt;
+    try {
+      const form = buildForm(options);
+
+      const response = await axios.post(`${API_BASE_URL}/?errfmt=json`, form, {
+        auth: { username, password: apiKey },
+        headers: form.getHeaders(),
+        responseType: "arraybuffer",
+        timeout: 120000
+      });
+
+      // Ensure output directory exists
+      const dir = path.dirname(options.outputPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync(options.outputPath, response.data);
+
+      return {
+        success: true,
+        outputPath: path.resolve(options.outputPath),
+        metadata: parseMetadata(response.headers),
+        isDemo: isDemo(username)
+      };
+    } catch (error) {
+      lastError = error;
+
+      // Retry on 5xx errors (except on last attempt)
+      if (is5xxError(error) && attempt <= MAX_RETRIES) {
+        if (attempt > 1) {
+          await sleep(RETRY_DELAY_MS);
+        }
+        continue;
+      }
+
+      // Non-retryable error or last attempt
+      break;
+    }
+  }
+
+  return handleApiError(lastError, attempts);
 }
