@@ -1,11 +1,11 @@
 {
-  "name": "pdfcrowd-mcp-server",
+  "name": "pdfcrowd-pdf-export-mcp",
   "version": "1.0.0",
   "description": "MCP server for PDFCrowd API - convert HTML and URLs to PDF",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "pdfcrowd-mcp-server": "dist/index.js"
+    "pdfcrowd-pdf-export-mcp": "dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",

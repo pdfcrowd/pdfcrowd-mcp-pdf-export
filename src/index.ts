@@ -12,7 +12,7 @@ import { CreatePdfSchema, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 
 const server = new McpServer({
-  name: "pdfcrowd-mcp-server",
+  name: "PDFCrowd PDF Export",
   version: "1.0.0"
 });
 

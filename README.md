@@ -1,4 +1,4 @@
-# PDFCrowd MCP Server
+# PDFCrowd PDF Export MCP
 
 MCP server for exporting content as PDF using the PDFCrowd API.
 
@@ -6,7 +6,7 @@ MCP server for exporting content as PDF using the PDFCrowd API.
 
 ```bash
 git clone <repo-url>
-cd pdfcrowd-mcp-server
+cd pdfcrowd-pdf-export-mcp
 npm install
 npm run build
 ```
@@ -24,7 +24,7 @@ Add to `~/.mcp.json`:
   "mcpServers": {
     "pdfcrowd": {
       "command": "node",
-      "args": ["/absolute/path/to/pdfcrowd-mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/pdfcrowd-pdf-export-mcp/dist/index.js"],
       "env": {
         "PDFCROWD_USERNAME": "your_username",
         "PDFCROWD_API_KEY": "your_api_key"
@@ -44,7 +44,7 @@ Add to `~/.codex/config.toml`:
 ```toml
 [mcp_servers.pdfcrowd]
 command = "node"
-args = ["/absolute/path/to/pdfcrowd-mcp-server/dist/index.js"]
+args = ["/absolute/path/to/pdfcrowd-pdf-export-mcp/dist/index.js"]
 tool_timeout_sec = 65
 
 [mcp_servers.pdfcrowd.env]
@@ -61,7 +61,7 @@ Add to `~/.gemini/settings.json`:
   "mcpServers": {
     "pdfcrowd": {
       "command": "node",
-      "args": ["/absolute/path/to/pdfcrowd-mcp-server/dist/index.js"],
+      "args": ["/absolute/path/to/pdfcrowd-pdf-export-mcp/dist/index.js"],
       "env": {
         "PDFCROWD_USERNAME": "your_username",
         "PDFCROWD_API_KEY": "your_api_key"
