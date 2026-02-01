@@ -4,6 +4,9 @@ node_modules/
 # Build output
 dist/
 
+# Generated version file
+src/version.ts
+
 # Environment
 .env
 .env.local

@@ -2,10 +2,12 @@ import axios, { AxiosError } from "axios";
 import FormData from "form-data";
 import * as fs from "fs";
 import * as path from "path";
+import { VERSION } from "../version.js";
 
 const API_HOST = "api.pdfcrowd.com";
 const API_VERSION = "24.04";
 const API_BASE_URL = `https://${API_HOST}/convert/${API_VERSION}`;
+const USER_AGENT = `pdfcrowd-mcp-server/${VERSION} (Node.js)`;
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
@@ -185,7 +187,10 @@ export async function createPdf(options: CreatePdfOptions): Promise<ConversionRe
 
       const response = await axios.post(`${API_BASE_URL}/?errfmt=json`, form, {
         auth: { username, password: apiKey },
-        headers: form.getHeaders(),
+        headers: {
+          ...form.getHeaders(),
+          "User-Agent": USER_AGENT
+        },
         responseType: "arraybuffer",
         timeout: 120000
       });
