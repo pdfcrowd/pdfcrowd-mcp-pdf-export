@@ -24,11 +24,15 @@ Add to `~/.mcp.json`:
       "env": {
         "PDFCROWD_USERNAME": "your_username",
         "PDFCROWD_API_KEY": "your_api_key"
-      }
+      },
+      "timeout": 65000
     }
   }
 }
 ```
+
+The `timeout` (in milliseconds) sets how long Claude Code waits for PDF creation.
+The PDFCrowd API may take up to 60 seconds for complex documents, so 65000ms is recommended.
 
 Restart Claude Code to load the server.
 

@@ -11,6 +11,8 @@ const USER_AGENT = `pdfcrowd-mcp-server/${VERSION} (Node.js)`;
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
+// PDFCrowd API times out after 60s; we use 120s to allow for retries and network latency
+const REQUEST_TIMEOUT_MS = 120000;
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -192,7 +194,7 @@ export async function createPdf(options: CreatePdfOptions): Promise<ConversionRe
           "User-Agent": USER_AGENT
         },
         responseType: "arraybuffer",
-        timeout: 120000
+        timeout: REQUEST_TIMEOUT_MS
       });
 
       // Ensure output directory exists
