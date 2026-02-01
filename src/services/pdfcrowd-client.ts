@@ -62,41 +62,53 @@ function parseMetadata(headers: Record<string, unknown>): ConversionMetadata {
   };
 }
 
+interface ApiErrorResponse {
+  status_code: number;
+  reason_code: number;
+  message: string;
+}
+
+function parseJsonError(data: Buffer | string): ApiErrorResponse | null {
+  try {
+    const str = Buffer.isBuffer(data) ? data.toString("utf-8") : data;
+    const parsed = JSON.parse(str);
+    if (
+      typeof parsed.status_code === "number" &&
+      typeof parsed.reason_code === "number" &&
+      typeof parsed.message === "string"
+    ) {
+      return parsed as ApiErrorResponse;
+    }
+  } catch {
+    // JSON parsing failed
+  }
+  return null;
+}
+
 function handleApiError(error: unknown): ErrorResult {
   if (error instanceof AxiosError) {
     if (error.response) {
       const status = error.response.status;
-      const message = error.response.data?.toString() || error.message;
+      const jsonError = parseJsonError(error.response.data);
 
-      switch (status) {
-        case 400:
-          return { success: false, error: `Invalid request: ${message}`, httpCode: status };
-        case 401:
-          return { success: false, error: "Authentication failed. Check credentials.", httpCode: status };
-        case 402:
-          return { success: false, error: "Insufficient credits. Upgrade at pdfcrowd.com/pricing", httpCode: status };
-        case 403:
-          return { success: false, error: "Access forbidden.", httpCode: status };
-        case 413:
-          return { success: false, error: "Input too large.", httpCode: status };
-        case 470:
-          return { success: false, error: `Invalid parameter: ${message}`, httpCode: status };
-        case 502:
-        case 503:
-          return { success: false, error: "Service temporarily unavailable. Try again.", httpCode: status };
-        default:
-          return { success: false, error: `API error (${status}): ${message}`, httpCode: status };
+      if (jsonError) {
+        const msg = `PDFCrowd error ${jsonError.status_code} (reason ${jsonError.reason_code}): ${jsonError.message}`;
+        return { success: false, error: msg, httpCode: status };
       }
+
+      // Fallback to string-based handling
+      const message = error.response.data?.toString() || error.message;
+      return { success: false, error: `PDFCrowd API error (${status}): ${message}`, httpCode: status };
     } else if (error.code === "ECONNABORTED") {
-      return { success: false, error: "Request timed out." };
+      return { success: false, error: "PDFCrowd request timed out." };
     } else if (error.code === "ENOTFOUND") {
-      return { success: false, error: "Cannot reach API. Check internet connection." };
+      return { success: false, error: "PDFCrowd API unreachable. Check internet connection." };
     }
   }
 
   return {
     success: false,
-    error: `Unexpected error: ${error instanceof Error ? error.message : String(error)}`
+    error: `PDFCrowd unexpected error: ${error instanceof Error ? error.message : String(error)}`
   };
 }
 
@@ -142,7 +154,7 @@ export async function createPdf(options: CreatePdfOptions): Promise<ConversionRe
       form.append("title", options.title);
     }
 
-    const response = await axios.post(`${API_BASE_URL}/`, form, {
+    const response = await axios.post(`${API_BASE_URL}/?errfmt=json`, form, {
       auth: { username, password: apiKey },
       headers: form.getHeaders(),
       responseType: "arraybuffer",
