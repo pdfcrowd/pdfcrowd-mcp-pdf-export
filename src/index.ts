@@ -34,6 +34,8 @@ When creating HTML:
 - No animations - static PDF cannot capture them
 - Output is paginated - design for pages, use break-before/after/inside CSS
 
+On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
+
 Demo mode (watermarked). Upgrade: pdfcrowd.com/pricing`,
     inputSchema: CreatePdfSchema,
     annotations: {

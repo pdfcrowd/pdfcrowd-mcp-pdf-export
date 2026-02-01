@@ -103,6 +103,67 @@ function parseJsonError(data: Buffer | string): ApiErrorResponse | null {
   return null;
 }
 
+function getErrorGuidance(status: number, reasonCode: number): string {
+  // User configuration issues - tell user, don't retry with other tools
+  if (status === 401) {
+    if (reasonCode === 103) {
+      return "Tell the user their PDFCrowd license has expired. Do not retry with other PDF tools.";
+    }
+    if (reasonCode === 106) {
+      return "Tell the user to check PDFCROWD_USERNAME and PDFCROWD_API_KEY in ~/.mcp.json. Do not retry with other PDF tools.";
+    }
+    return "Tell the user to check their PDFCrowd credentials in ~/.mcp.json. Do not retry with other PDF tools.";
+  }
+
+  if (status === 403 || reasonCode === 105) {
+    return "Tell the user they have no PDFCrowd credits remaining. Upgrade at pdfcrowd.com/pricing. Do not retry with other PDF tools.";
+  }
+
+  if (status === 413) {
+    return "The input is too large (max 300MB). Try with smaller content.";
+  }
+
+  if (status === 429 || reasonCode === 120) {
+    return "Rate limit exceeded. Tell the user to wait or upgrade their PDFCrowd plan. Do not retry with other PDF tools.";
+  }
+
+  if (status === 430 || reasonCode === 121) {
+    return "Too many concurrent requests. Wait and retry, or tell user to upgrade their plan.";
+  }
+
+  if (reasonCode === 122) {
+    return "Demo credits exhausted. Tell the user to get a PDFCrowd license at pdfcrowd.com/pricing. Do not retry with other PDF tools.";
+  }
+
+  // Request issues - Claude might fix by adjusting parameters
+  if (reasonCode === 320) {
+    return "The URL is invalid. Check the URL format and try again.";
+  }
+
+  if (reasonCode === 305 || reasonCode === 325) {
+    return "The HTML input is missing or invalid. Check your HTML content.";
+  }
+
+  if (reasonCode === 337) {
+    return "Invalid parameter value. Check the parameter format.";
+  }
+
+  if (reasonCode === 357) {
+    return "The input file is password-protected. Tell the user to provide an unprotected file.";
+  }
+
+  // Transient issues
+  if (reasonCode === 306) {
+    return "Input too complex or large. Try simplifying the HTML content.";
+  }
+
+  if (reasonCode === 323) {
+    return "Conversion timed out. Possible causes: complex layout, large content, or slow-loading resources (images, fonts). Simplify the HTML or use inline/smaller images.";
+  }
+
+  return "";
+}
+
 function handleApiError(error: unknown, attempts?: number): ErrorResult {
   const suffix = attempts && attempts > 1 ? ` (after ${attempts} attempts)` : "";
 
@@ -112,7 +173,9 @@ function handleApiError(error: unknown, attempts?: number): ErrorResult {
       const jsonError = parseJsonError(error.response.data);
 
       if (jsonError) {
-        const msg = `PDFCrowd error ${jsonError.status_code} (reason ${jsonError.reason_code}): ${jsonError.message}${suffix}`;
+        const guidance = getErrorGuidance(jsonError.status_code, jsonError.reason_code);
+        const guidanceSuffix = guidance ? ` ${guidance}` : "";
+        const msg = `PDFCrowd error ${jsonError.status_code} (reason ${jsonError.reason_code}): ${jsonError.message}${suffix}.${guidanceSuffix}`;
         return { success: false, error: msg, httpCode: status };
       }
 
@@ -122,7 +185,7 @@ function handleApiError(error: unknown, attempts?: number): ErrorResult {
     } else if (error.code === "ECONNABORTED") {
       return { success: false, error: `PDFCrowd request timed out.${suffix}` };
     } else if (error.code === "ENOTFOUND") {
-      return { success: false, error: `PDFCrowd API unreachable. Check internet connection.${suffix}` };
+      return { success: false, error: `PDFCrowd API unreachable. Tell the user to check their internet connection.${suffix}` };
     }
   }
 
