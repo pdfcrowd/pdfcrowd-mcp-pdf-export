@@ -36,6 +36,8 @@ When creating HTML:
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
 
+Privacy: Content sent to PDFCrowd servers (EU) via HTTPS, deleted after processing. pdfcrowd.com/privacy/
+
 Demo mode (watermarked). Upgrade: pdfcrowd.com/pricing`,
     inputSchema: CreatePdfSchema,
     annotations: {
