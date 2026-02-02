@@ -29,15 +29,15 @@ Provide one of: html, url, or file path. Always specify output_path.
 When creating HTML:
 - No background color (white default) unless user requests dark; dark requires no_margins
 - Use 16px base font size
-- Modern CSS3 works: flexbox, grid
-- Images: absolute URLs or inline data URIs
-- JavaScript executes: charts, dynamic content OK
+- Design for print: content is paginated
+- Use block flow for main structure (sections stack vertically)
+- Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
+- Add break-inside:avoid on cards, rows, figures, any grouped content
+- Use break-before:page for intentional section breaks
+- Images: absolute URLs or inline data URIs; use inline SVG for charts and infographics
 - No animations - static PDF cannot capture them
-- Output is paginated - design for pages, use break-before/after/inside CSS
 
-On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
-
-Privacy: Content sent to PDFCrowd servers (EU) via HTTPS, deleted after processing. pdfcrowd.com/privacy/
+On error: Read the error message carefully and follow its guidance. Report configuration issues to the user.
 
 Demo mode (watermarked). Upgrade: pdfcrowd.com/pricing`,
     inputSchema: CreatePdfSchema,

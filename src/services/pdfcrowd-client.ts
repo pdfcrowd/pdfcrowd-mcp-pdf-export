@@ -232,6 +232,9 @@ function buildForm(options: CreatePdfOptions): FormData {
     form.append("title", options.title);
   }
 
+  // Default options
+  //form.append("enable_pdf_forms", "on");
+
   return form;
 }
 
