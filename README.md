@@ -2,6 +2,36 @@
 
 MCP server for exporting content as PDF, powered by [PDFCrowd](https://pdfcrowd.com).
 
+PDF Export MCP lets AI assistants like Claude export any content to professionally formatted PDFs. The AI handles layout and design, PDFCrowd handles the rendering. Reports, documentation, code reviews — anything your AI can describe, it can now export.
+
+## What You Can Do
+
+**The pattern:**
+```
+[Analyze/Read something] → [Create PDF with specific structure] → [Save to path]
+```
+
+**Generate a code review report:**
+```
+Review src/auth/ for security issues and create a PDF report
+with findings and recommendations. Save to reports/auth-review.pdf
+```
+
+**Document your API from code:**
+```
+Read the route handlers in src/api/, generate API documentation
+with endpoints, parameters, and examples. Save to docs/api.pdf
+```
+
+**Automate reports (non-interactive):**
+```bash
+claude -p "Analyze git commits from last week, create a sprint
+  summary PDF at reports/sprint.pdf" && \
+  mail -s "Sprint Report" team@company.com -A reports/sprint.pdf
+```
+
+[More example prompts →](SAMPLE_PROMPTS.md)
+
 ## Setup
 
 ```bash
