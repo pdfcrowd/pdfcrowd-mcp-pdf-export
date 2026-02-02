@@ -1,7 +1,7 @@
 {
   "name": "pdfcrowd-mcp-pdf-export",
   "version": "1.0.0",
-  "description": "PDF Export MCP - Export any content to PDF with AI-powered formatting. Works with Claude Code, Codex CLI, and other MCP clients.",
+  "description": "PDF Export for AI agents - export any content to PDF with AI-powered formatting. Works with Claude Code, Codex CLI, and other MCP clients.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {

@@ -1,8 +1,8 @@
-# PDF Export MCP
+# PDF Export for AI Agents
 
-MCP server for exporting content as PDF, powered by [PDFCrowd](https://pdfcrowd.com).
+Export any content to PDF from AI CLI agents like Claude Code, Codex CLI, and Gemini CLI. Reports, documentation, code reviews — anything your AI can describe, it can now export.
 
-PDF Export MCP lets AI assistants like Claude export any content to professionally formatted PDFs. The AI handles layout and design, PDFCrowd handles the rendering. Reports, documentation, code reviews — anything your AI can describe, it can now export.
+Powered by [PDFCrowd](https://pdfcrowd.com).
 
 ## What You Can Do
 

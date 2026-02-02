@@ -13,7 +13,7 @@ import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
 
 const server = new McpServer({
-  name: "PDF Export MCP",
+  name: "PDF Export",
   version: VERSION
 });
 
