@@ -50,7 +50,7 @@ Add to `~/.mcp.json`:
 ```json
 {
   "mcpServers": {
-    "pdfcrowd": {
+    "pdfcrowd-export-pdf": {
       "command": "node",
       "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
       "env": {
@@ -68,12 +68,12 @@ Add to `~/.mcp.json`:
 Add to `~/.codex/config.toml`:
 
 ```toml
-[mcp_servers.pdfcrowd]
+[mcp_servers.pdfcrowd-export-pdf]
 command = "node"
 args = ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"]
 tool_timeout_sec = 65
 
-[mcp_servers.pdfcrowd.env]
+[mcp_servers.pdfcrowd-export-pdf.env]
 PDFCROWD_USERNAME = "demo"
 PDFCROWD_API_KEY = "demo"
 ```
@@ -85,7 +85,7 @@ Add to `~/.gemini/settings.json`:
 ```json
 {
   "mcpServers": {
-    "pdfcrowd": {
+    "pdfcrowd-export-pdf": {
       "command": "node",
       "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
       "env": {
