@@ -25,6 +25,3 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Test output
-/tmp/
-*.pdf
