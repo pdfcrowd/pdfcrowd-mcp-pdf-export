@@ -124,3 +124,7 @@ For sensitive or confidential content, review PDFCrowd's privacy policy before u
 ## Development
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for build instructions, testing, and versioning.
+
+## License
+
+[MIT](LICENSE)
