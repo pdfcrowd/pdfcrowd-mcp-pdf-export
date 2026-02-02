@@ -1,19 +1,17 @@
-# PDFCrowd PDF Export MCP
+# PDF Export MCP
 
-MCP server for exporting content as PDF using the PDFCrowd API.
+MCP server for exporting content as PDF, powered by [PDFCrowd](https://pdfcrowd.com).
 
 ## Setup
 
 ```bash
 git clone <repo-url>
-cd pdfcrowd-pdf-export-mcp
+cd pdfcrowd-mcp-pdf-export
 npm install
 npm run build
 ```
 
 ## Configuration
-
-The PDFCrowd API may take up to 60 seconds for complex documents. Configure an appropriate timeout for your CLI.
 
 ### Claude Code
 
@@ -24,18 +22,16 @@ Add to `~/.mcp.json`:
   "mcpServers": {
     "pdfcrowd": {
       "command": "node",
-      "args": ["/absolute/path/to/pdfcrowd-pdf-export-mcp/dist/index.js"],
+      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
       "env": {
-        "PDFCROWD_USERNAME": "your_username",
-        "PDFCROWD_API_KEY": "your_api_key"
+        "PDFCROWD_USERNAME": "demo",
+        "PDFCROWD_API_KEY": "demo"
       },
       "timeout": 65000
     }
   }
 }
 ```
-
-Restart Claude Code to load the server.
 
 ### Codex CLI
 
@@ -44,12 +40,12 @@ Add to `~/.codex/config.toml`:
 ```toml
 [mcp_servers.pdfcrowd]
 command = "node"
-args = ["/absolute/path/to/pdfcrowd-pdf-export-mcp/dist/index.js"]
+args = ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"]
 tool_timeout_sec = 65
 
 [mcp_servers.pdfcrowd.env]
-PDFCROWD_USERNAME = "your_username"
-PDFCROWD_API_KEY = "your_api_key"
+PDFCROWD_USERNAME = "demo"
+PDFCROWD_API_KEY = "demo"
 ```
 
 ### Gemini CLI
@@ -61,16 +57,22 @@ Add to `~/.gemini/settings.json`:
   "mcpServers": {
     "pdfcrowd": {
       "command": "node",
-      "args": ["/absolute/path/to/pdfcrowd-pdf-export-mcp/dist/index.js"],
+      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
       "env": {
-        "PDFCROWD_USERNAME": "your_username",
-        "PDFCROWD_API_KEY": "your_api_key"
+        "PDFCROWD_USERNAME": "demo",
+        "PDFCROWD_API_KEY": "demo"
       },
       "timeout": 65000
     }
   }
 }
 ```
+
+### Notes
+
+- Replace `/FULL/PATH/TO/` with the actual path to your installation
+- Restart your CLI after configuration to load the server
+- Timeout is set to 65 seconds because complex PDFs may take up to 60 seconds to generate
 
 ## Credentials
 

@@ -4,7 +4,7 @@
 PDFCROWD_USERNAME ?= demo
 PDFCROWD_API_KEY ?= demo
 
-.PHONY: all build clean install run dev inspector test schema help version
+.PHONY: all build clean install run dev inspector test schema help version npm-check npm-pack npm-publish npm-publish-dry
 
 all: build
 
@@ -74,6 +74,32 @@ schema: build
 		console.log(JSON.stringify(zodToJsonSchema(CreatePdfSchema), null, 2)); \
 	"
 
+# Check package before publishing
+npm-check: build
+	@echo "Checking package..."
+	@npm pack --dry-run
+	@echo ""
+	@echo "Package contents above. Review before publishing."
+
+# Create tarball without publishing
+npm-pack: build
+	npm pack
+
+# Dry run publish (validates everything without actually publishing)
+npm-publish-dry: build
+	npm publish --dry-run
+
+# Publish to npm (requires npm login)
+npm-publish: build
+	@echo "Publishing to npm..."
+	@echo "Make sure you have:"
+	@echo "  1. Updated version in package.json"
+	@echo "  2. Committed all changes"
+	@echo "  3. Logged in with 'npm login'"
+	@echo ""
+	@read -p "Continue? [y/N] " confirm && [ "$$confirm" = "y" ] || exit 1
+	npm publish
+
 # Show help
 help:
 	@echo "PDFCrowd MCP Server"
@@ -87,6 +113,12 @@ help:
 	@echo "  make inspector  - Run MCP Inspector for debugging"
 	@echo "  make test       - Quick test: convert example.com to PDF"
 	@echo "  make schema     - Show tool JSON schema"
+	@echo ""
+	@echo "NPM publishing:"
+	@echo "  make npm-check       - Preview package contents"
+	@echo "  make npm-pack        - Create tarball without publishing"
+	@echo "  make npm-publish-dry - Dry run publish (validates without publishing)"
+	@echo "  make npm-publish     - Publish to npm registry"
 	@echo ""
 	@echo "Environment variables:"
 	@echo "  PDFCROWD_USERNAME - PDFCrowd username (default: demo)"

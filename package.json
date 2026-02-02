@@ -1,17 +1,18 @@
 {
-  "name": "pdfcrowd-pdf-export-mcp",
+  "name": "pdfcrowd-mcp-pdf-export",
   "version": "1.0.0",
-  "description": "MCP server for PDFCrowd API - convert HTML and URLs to PDF",
+  "description": "PDF Export MCP - Export any content to PDF with AI-powered formatting. Works with Claude Code, Codex CLI, and other MCP clients.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "pdfcrowd-pdf-export-mcp": "dist/index.js"
+    "pdfcrowd-mcp-pdf-export": "dist/index.js"
   },
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
   },
   "engines": {
     "node": ">=18"
@@ -30,10 +31,32 @@
   },
   "keywords": [
     "mcp",
-    "pdfcrowd",
+    "model-context-protocol",
     "pdf",
-    "html-to-pdf",
-    "url-to-pdf"
+    "pdf-export",
+    "pdfcrowd",
+    "claude",
+    "claude-code",
+    "codex",
+    "ai",
+    "llm",
+    "document-generation",
+    "report-generation",
+    "html-to-pdf"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "author": "PDFCrowd <support@pdfcrowd.com> (https://pdfcrowd.com)",
+  "homepage": "https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export/issues"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
 }

@@ -12,7 +12,7 @@ import { CreatePdfSchema, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 
 const server = new McpServer({
-  name: "PDFCrowd PDF Export",
+  name: "PDF Export MCP",
   version: "1.0.0"
 });
 
@@ -93,7 +93,7 @@ async function main() {
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("PDFCrowd MCP server running");
+  console.error("PDF Export MCP server running");
 }
 
 main().catch((error) => {

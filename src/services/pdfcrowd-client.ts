@@ -7,7 +7,7 @@ import { VERSION } from "../version.js";
 const API_HOST = "api.pdfcrowd.com";
 const API_VERSION = "24.04";
 const API_BASE_URL = `https://${API_HOST}/convert/${API_VERSION}`;
-const USER_AGENT = `pdfcrowd-mcp-server/${VERSION} (Node.js)`;
+const USER_AGENT = `pdfcrowd-mcp-pdf-export/${VERSION} (Node.js)`;
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1000;
