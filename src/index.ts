@@ -22,22 +22,19 @@ server.registerTool(
   "pdfcrowd_create_pdf",
   {
     title: "Create PDF",
-    description: `Use this to export content as PDF. If input isn't HTML, create a well-designed layout first.
-
-Provide one of: html, url, or file path. Always specify output_path.
-
+      description: `Export any content (including charts) to PDF.
+If input isn't HTML, create a well-designed layout first.
+Check schema for valid parameters.
 When creating HTML:
-- No background color (white default) unless user requests dark; dark requires no_margins
+- No background color (white default)
 - Use 16px base font size
-- Design for print: content is paginated
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
-- Add break-inside:avoid on cards, rows, figures, any grouped content
-- Use break-before:page for intentional section breaks
-- Images: absolute URLs or inline data URIs; use inline SVG for charts and infographics
+- break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
+- Images: absolute URLs or inline data URIs; embed inline SVG for charts and infographics
 - No animations - static PDF cannot capture them
 
-On error: Read the error message carefully and follow its guidance. Report configuration issues to the user.
+On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
 
 Demo mode (watermarked). Upgrade: pdfcrowd.com/pricing`,
     inputSchema: CreatePdfSchema,
