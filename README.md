@@ -123,9 +123,4 @@ For sensitive or confidential content, review PDFCrowd's privacy policy before u
 
 ## Development
 
-```bash
-make help       # show all targets
-make test       # quick test
-make inspector  # debug with MCP Inspector
-make schema     # show tool JSON schema
-```
+See [DEVELOPMENT.md](DEVELOPMENT.md) for build instructions, testing, and versioning.
