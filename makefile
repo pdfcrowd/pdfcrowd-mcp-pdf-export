@@ -4,7 +4,7 @@
 PDFCROWD_USERNAME ?= demo
 PDFCROWD_API_KEY ?= demo
 
-.PHONY: all build clean install run dev inspector test schema help version npm-check npm-pack npm-publish npm-publish-dry
+.PHONY: all build clean install run dev inspector test schema help npm-check npm-pack npm-publish npm-publish-dry
 
 all: build
 
@@ -12,19 +12,14 @@ all: build
 install:
 	npm install
 
-# Generate version.ts from package.json
-version:
-	@echo "export const VERSION = \"$$(node -p "require('./package.json').version")\";" > src/version.ts
-
 # Build TypeScript to JavaScript
-build: version
+build:
 	npm run build
 
 # Clean build artifacts
 clean:
 	rm -rf dist
 	rm -rf node_modules
-	rm -f src/version.ts
 
 # Run the MCP server (stdio mode)
 run: build

@@ -10,10 +10,11 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 import { CreatePdfSchema, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
+import { VERSION } from "./version.js";
 
 const server = new McpServer({
   name: "PDF Export MCP",
-  version: "1.0.0"
+  version: VERSION
 });
 
 // Register the main tool
