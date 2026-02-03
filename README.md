@@ -1,6 +1,8 @@
 # PDF Export for AI Agents
 
-Export any content to PDF from AI CLI agents like Claude Code, Codex CLI, and Gemini CLI. Reports, documentation, code reviews — anything your AI can describe, it can now export.
+MCP server for PDF export. Install locally, use from Claude Code, Codex, or Gemini CLI.
+
+Reports, documentation, code reviews — anything your AI can describe, it can now export.
 
 Powered by [PDFCrowd](https://pdfcrowd.com).
 
@@ -11,16 +13,16 @@ Powered by [PDFCrowd](https://pdfcrowd.com).
 [Analyze/Read something] → [Create PDF with specific structure] → [Save to path]
 ```
 
-**Generate a code review report:**
-```
-Review src/auth/ for security issues and create a PDF report
-with findings and recommendations. Save to reports/auth-review.pdf
-```
-
 **Document your API from code:**
 ```
 Read the route handlers in src/api/, generate API documentation
 with endpoints, parameters, and examples. Save to docs/api.pdf
+```
+
+**Document your database schema:**
+```
+Explore the codebase and create a PDF documenting
+all DB tables, relationships, column types, and indexes. Save to docs/schema.pdf
 ```
 
 **Automate reports (non-interactive):**
@@ -106,8 +108,8 @@ Add to `~/.gemini/settings.json`:
 
 ## Credentials
 
-- Demo: use `demo` / `demo` (produces watermarked PDFs)
-- Production: get credentials at [pdfcrowd.com/pricing](https://pdfcrowd.com/pricing/)
+- Default: produces watermarked PDFs (no signup needed)
+- Remove watermarks: get credentials at [pdfcrowd.com/pricing](https://pdfcrowd.com/pricing/)
 
 ## Privacy Notice
 
