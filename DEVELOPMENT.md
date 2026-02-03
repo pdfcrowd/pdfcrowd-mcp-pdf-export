@@ -1,11 +1,33 @@
 # Development
 
-## Quick Start
+## Building from Source
 
 ```bash
+git clone https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export
+cd pdfcrowd-mcp-pdf-export
 npm install
 npm run build
 ```
+
+To use your local build, update your MCP config to point to the built file:
+
+```json
+{
+  "mcpServers": {
+    "pdfcrowd-export-pdf": {
+      "command": "node",
+      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
+      "env": {
+        "PDFCROWD_USERNAME": "demo",
+        "PDFCROWD_API_KEY": "demo"
+      },
+      "timeout": 65000
+    }
+  }
+}
+```
+
+Replace `/FULL/PATH/TO/` with the actual path to your clone.
 
 ## Make Targets
 

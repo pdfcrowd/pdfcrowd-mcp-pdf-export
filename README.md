@@ -34,27 +34,20 @@ claude -p "Analyze git commits from last week, create a sprint
 
 [More example prompts →](SAMPLE_PROMPTS.md)
 
-## Setup
-
-```bash
-git clone <repo-url>
-cd pdfcrowd-mcp-pdf-export
-npm install
-npm run build
-```
-
 ## Configuration
 
-### Claude Code
+### Claude Code / Gemini CLI
 
-Add to `~/.mcp.json`:
+Add to your config file:
+- Claude Code: `~/.mcp.json`
+- Gemini CLI: `~/.gemini/settings.json`
 
 ```json
 {
   "mcpServers": {
     "pdfcrowd-export-pdf": {
-      "command": "node",
-      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "pdfcrowd-mcp-pdf-export"],
       "env": {
         "PDFCROWD_USERNAME": "demo",
         "PDFCROWD_API_KEY": "demo"
@@ -71,8 +64,8 @@ Add to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.pdfcrowd-export-pdf]
-command = "node"
-args = ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"]
+command = "npx"
+args = ["-y", "pdfcrowd-mcp-pdf-export"]
 tool_timeout_sec = 65
 
 [mcp_servers.pdfcrowd-export-pdf.env]
@@ -80,29 +73,8 @@ PDFCROWD_USERNAME = "demo"
 PDFCROWD_API_KEY = "demo"
 ```
 
-### Gemini CLI
-
-Add to `~/.gemini/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "pdfcrowd-export-pdf": {
-      "command": "node",
-      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
-      "env": {
-        "PDFCROWD_USERNAME": "demo",
-        "PDFCROWD_API_KEY": "demo"
-      },
-      "timeout": 65000
-    }
-  }
-}
-```
-
 ### Notes
 
-- Replace `/FULL/PATH/TO/` with the actual path to your installation
 - Restart your CLI after configuration to load the server
 - Timeout is set to 65 seconds because complex PDFs may take up to 60 seconds to generate
 
@@ -125,7 +97,7 @@ For sensitive or confidential content, review PDFCrowd's privacy policy before u
 
 ## Development
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for build instructions, testing, and versioning.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for building from source, testing, and contributing.
 
 ## License
 
