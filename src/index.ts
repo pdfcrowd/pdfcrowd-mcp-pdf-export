@@ -8,6 +8,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
+import { z } from "zod";
 import { CreatePdfSchema, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
@@ -26,7 +27,7 @@ server.registerTool(
 If input isn't HTML, create a well-designed layout first.
 Check schema for valid parameters, output_path is required.
 When creating HTML:
-- No background color (white default)
+- No body background color
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
@@ -35,8 +36,7 @@ When creating HTML:
 - Images: absolute URLs or inline data URIs; embed inline SVG for charts and infographics
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
-
-Demo mode (watermarked). Upgrade: pdfcrowd.com/pricing`,
+`,
     inputSchema: CreatePdfSchema,
     annotations: {
       readOnlyHint: false,
@@ -74,6 +74,30 @@ Demo mode (watermarked). Upgrade: pdfcrowd.com/pricing`,
     return {
       content: [{ type: "text", text: lines.join("\n") }]
     };
+  }
+);
+
+// Info tool for users
+server.registerTool(
+  "pdfcrowd_info",
+  {
+    title: "PDF Export Info",
+    description: "Get usage tips and upgrade info for PDF Export",
+    inputSchema: z.object({})
+  },
+  async () => {
+    const isDemo = process.env.PDFCROWD_USERNAME === "demo";
+    const lines = [
+      `PDF Export v${VERSION} | pdfcrowd.com`,
+      `Status: ${isDemo ? 'DEMO (watermarked)' : 'Licensed'}`,
+      isDemo ? 'Remove watermark: pdfcrowd.com/pricing' : null,
+      '',
+      'Prompt pattern: [Read/analyze content] → [Create PDF with structure] → [Save to path]',
+      '',
+      'Support: support@pdfcrowd.com'
+    ].filter(line => line !== null);
+
+    return { content: [{ type: "text", text: lines.join('\n') }] };
   }
 );
 
