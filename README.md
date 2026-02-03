@@ -1,6 +1,6 @@
 # PDF Export for AI Agents
 
-MCP server for PDF export. Install locally, use from Claude Code, Codex, or Gemini CLI.
+MCP server for PDF export. Install locally, use from Claude Code, Codex, Gemini CLI, or any MCP-compatible client.
 
 Reports, documentation, code reviews — anything your AI can describe, it can now export.
 
