@@ -24,15 +24,15 @@ server.registerTool(
     title: "Create PDF",
       description: `Export any content (including charts) to PDF.
 If input isn't HTML, create a well-designed layout first.
-Check schema for valid parameters.
+Check schema for valid parameters, output_path is required.
 When creating HTML:
 - No background color (white default)
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
+- TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs; embed inline SVG for charts and infographics
-- No animations - static PDF cannot capture them
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
 
