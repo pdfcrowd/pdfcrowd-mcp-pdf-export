@@ -202,7 +202,7 @@ export interface CreatePdfOptions {
   outputPath: string;
   pageSize?: string;
   orientation?: string;
-  noMargins?: boolean;
+  margins?: string;
   title?: string;
 }
 
@@ -225,8 +225,13 @@ function buildForm(options: CreatePdfOptions): FormData {
   if (options.orientation) {
     form.append("orientation", options.orientation);
   }
-  if (options.noMargins) {
-    form.append("no_margins", "true");
+  if (options.margins) {
+    // Normalize decimal separator (comma to period) for the API
+    const marginValue = options.margins.replace(",", ".");
+    form.append("margin_top", marginValue);
+    form.append("margin_bottom", marginValue);
+    form.append("margin_left", marginValue);
+    form.append("margin_right", marginValue);
   }
   if (options.title) {
     form.append("title", options.title);

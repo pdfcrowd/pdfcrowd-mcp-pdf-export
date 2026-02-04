@@ -27,7 +27,7 @@ server.registerTool(
 If input isn't HTML, create a well-designed layout first.
 Check schema for valid parameters, output_path is required.
 When creating HTML:
-- set background-color:transparent;margins:0;padding:0 on <body> and main content
+- Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
@@ -54,7 +54,7 @@ On error: Read the error message carefully and follow its guidance. Report confi
       outputPath: params.output_path,
       pageSize: params.page_size,
       orientation: params.orientation,
-      noMargins: params.no_margins,
+      margins: params.margins,
       title: params.title
     });
 

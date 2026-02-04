@@ -3,6 +3,9 @@ import { z } from "zod";
 export const PAGE_SIZES = ["A3", "A4", "A5", "Letter"] as const;
 export const ORIENTATIONS = ["portrait", "landscape"] as const;
 
+// Matches values like "1in", "10mm", "0.5cm", "1,5cm", "100px", "12pt"
+const MARGIN_REGEX = /^\d+([.,]\d+)?(in|mm|cm|px|pt)$/;
+
 export const CreatePdfSchema = z.object({
   html: z.string()
     .optional()
@@ -23,9 +26,10 @@ export const CreatePdfSchema = z.object({
   orientation: z.enum(ORIENTATIONS)
     .default("portrait")
     .describe("Page orientation"),
-  no_margins: z.boolean()
-    .default(false)
-    .describe("Remove all margins"),
+  margins: z.string()
+    .regex(MARGIN_REGEX, "Must be a number with unit: in, mm, cm, px, or pt (e.g., 1in, 10mm, 0.5cm)")
+    .optional()
+    .describe("Page margins - single value applied to all sides (e.g., 1in, 10mm, 0.5cm, 100px, 12pt)"),
   title: z.string()
     .optional()
     .describe("PDF title metadata")
