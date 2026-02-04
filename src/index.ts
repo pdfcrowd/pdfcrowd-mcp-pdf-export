@@ -25,16 +25,17 @@ server.registerTool(
     title: "Create PDF",
       description: `Export any content (including charts) to PDF.
 If input isn't HTML, create a well-designed layout first.
-Check schema for valid parameters, output_path is required.
+Use only parameters in this tool's schema, output_path is required.
 When creating HTML:
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
+- Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs
-- For visualizations, use Mermaid from CDN (https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js) - choose the appropriate diagram type for the data
+- For visualizations, use Mermaid from CDN (https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js) - limit complexity, split large diagrams into multiple pages rather than scaling down
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
 `,
