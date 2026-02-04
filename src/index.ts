@@ -28,6 +28,7 @@ If input isn't HTML, create a well-designed layout first.
 Use only parameters in this tool's schema, output_path is required.
 When creating HTML:
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
+- Content is auto-scaled to fit page width - avoid setting explicit container widths
 - Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
