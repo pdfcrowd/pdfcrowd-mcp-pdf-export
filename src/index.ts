@@ -27,7 +27,7 @@ server.registerTool(
 If input isn't HTML, create a well-designed layout first.
 Check schema for valid parameters, output_path is required.
 When creating HTML:
-- No body background color
+- set background-color:transparent;margins:0;padding:0 on <body> and main content
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
