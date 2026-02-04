@@ -18,15 +18,9 @@ const server = new McpServer({
   version: VERSION
 });
 
-// Register the main tool
-server.registerTool(
-  "pdfcrowd_create_pdf",
-  {
-    title: "Create PDF",
-      description: `Export any content (including charts) to PDF.
-If input isn't HTML, create a well-designed layout first.
-Use only parameters in this tool's schema, output_path is required.
-When creating HTML:
+// Topic content for pdfcrowd_info tool
+const TOPICS = {
+  html_layout: `HTML Layout Guidelines for PDF Export:
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
 - Content is auto-scaled to fit page width - avoid setting explicit container widths
 - Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
@@ -36,7 +30,21 @@ When creating HTML:
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs
-- For visualizations, use Mermaid from CDN (https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js) - choose the appropriate diagram type for the data.
+- For visualizations, use Mermaid from CDN (https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js) - choose the appropriate diagram type for the data.`
+} as const;
+
+type TopicKey = keyof typeof TOPICS;
+const VALID_TOPICS = Object.keys(TOPICS) as TopicKey[];
+
+// Register the main tool
+server.registerTool(
+  "pdfcrowd_create_pdf",
+  {
+    title: "Create PDF",
+      description: `Export any content (including charts) to PDF.
+If input isn't HTML, create a well-designed layout first.
+Use only parameters in this tool's schema, output_path is required.
+IMPORTANT: Before creating HTML, first call pdfcrowd_info(topic: "html_layout") to get the layout guidelines.
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
 `,
@@ -86,9 +94,25 @@ server.registerTool(
   {
     title: "PDF Export Info",
     description: "Get usage tips and upgrade info for PDF Export",
-    inputSchema: z.object({})
+    inputSchema: z.object({
+      topic: z.string()
+        .optional()
+        .describe(`Optional topic for specific guidance. Available: ${VALID_TOPICS.join(", ")}`)
+    })
   },
-  async () => {
+  async (params: { topic?: string }) => {
+    // Return topic-specific content if requested
+    if (params.topic) {
+      if (params.topic in TOPICS) {
+        return { content: [{ type: "text", text: TOPICS[params.topic as TopicKey] }] };
+      }
+      // Invalid topic - return guidance
+      return {
+        content: [{ type: "text", text: `Unknown topic: "${params.topic}". Available topics: ${VALID_TOPICS.join(", ")}` }]
+      };
+    }
+
+    // Default: general info
     const isDemo = process.env.PDFCROWD_USERNAME === "demo";
     const lines = [
       `PDF Export v${VERSION} | pdfcrowd.com`,
@@ -96,6 +120,8 @@ server.registerTool(
       isDemo ? 'Remove watermark: pdfcrowd.com/pricing' : null,
       '',
       'Prompt pattern: [Read/analyze content] → [Create PDF with structure] → [Save to path]',
+      '',
+      `Available topics: ${VALID_TOPICS.join(", ")}`,
       '',
       'Support: support@pdfcrowd.com'
     ].filter(line => line !== null);
