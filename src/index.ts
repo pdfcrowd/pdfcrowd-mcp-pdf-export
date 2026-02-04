@@ -30,7 +30,18 @@ const TOPICS = {
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs
-- For visualizations, use Mermaid from CDN (https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js) - choose the appropriate diagram type for the data.`
+- For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
+`,
+  mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
+- CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
+- Init: mermaid.initialize({startOnLoad:true})
+- CRITICAL: Diagrams can break across pages. Prevent with:
+  - Wrap in container with break-inside:avoid
+  - Keep diagrams small (6-8 nodes max)
+  - Use flowchart LR for horizontal/compact layout
+  - Use break-before:page for large diagrams
+  - Split complex diagrams into multiple smaller ones
+`
 } as const;
 
 type TopicKey = keyof typeof TOPICS;
