@@ -3,7 +3,7 @@ import FormData from "form-data";
 import * as fs from "fs";
 import * as path from "path";
 import { VERSION } from "../version.js";
-import { DEFAULT_MARGIN } from "../schemas/index.js";
+import { DEFAULT_MARGIN, DEFAULT_VIEWPORT_WIDTH } from "../schemas/index.js";
 
 const API_HOST = "api.pdfcrowd.com";
 const API_VERSION = "24.04";
@@ -204,6 +204,7 @@ export interface CreatePdfOptions {
   pageSize?: string;
   orientation?: string;
   margins?: string;
+  viewportWidth?: number;
   title?: string;
 }
 
@@ -238,9 +239,10 @@ function buildForm(options: CreatePdfOptions): FormData {
     form.append("title", options.title);
   }
 
-  // Default options
-  //form.append("content_viewport_width", "balanced");    
-  //form.append("enable_pdf_forms", "on");
+  // Viewport and fit mode
+  const viewportWidth = options.viewportWidth ? `${options.viewportWidth}px` : DEFAULT_VIEWPORT_WIDTH;
+  form.append("content_viewport_width", viewportWidth);
+  form.append("content_fit_mode", "content-width");
 
   return form;
 }

@@ -10,7 +10,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { CreatePdfSchema, DEFAULT_MARGIN, type CreatePdfInput } from "./schemas/index.js";
+import { CreatePdfSchema, DEFAULT_MARGIN, DEFAULT_VIEWPORT_WIDTH, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
 
@@ -23,7 +23,7 @@ const server = new McpServer({
 const TOPICS = {
   html_layout: `HTML Layout Guidelines for PDF Export:
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
-- Content is auto-scaled to fit page width - avoid setting explicit container widths
+- Content is rendered at a default viewport width of ${DEFAULT_VIEWPORT_WIDTH} and auto-scaled to fit page width. Use the viewport_width parameter to change the rendering width (e.g., wider for landscape layouts)
 - Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
 - Use light backgrounds throughout ALL sections including cover/title pages (white/transparent for body) - dark/gradient backgrounds render poorly in print/PDF
 - Use 16px base font size
@@ -108,6 +108,7 @@ On error: Read the error message carefully and follow its guidance. Report confi
       pageSize: params.page_size,
       orientation: params.orientation,
       margins: params.margins,
+      viewportWidth: params.viewport_width,
       title: params.title
     });
 
