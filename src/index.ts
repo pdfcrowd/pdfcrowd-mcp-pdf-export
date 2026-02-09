@@ -29,6 +29,7 @@ const TOPICS = {
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
+- Cover/title pages: white/transparent background, break-after:page. No min-height:100vh - it overflows to two pages
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs
