@@ -9,6 +9,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import { CreatePdfSchema, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
@@ -43,10 +44,22 @@ const TOPICS = {
   - Use break-before:page for large diagrams
   - Split complex diagrams into multiple smaller ones
 `
-} as const;
+} as Record<string, string>;
 
-type TopicKey = keyof typeof TOPICS;
-const VALID_TOPICS = Object.keys(TOPICS) as TopicKey[];
+// Dynamic topic: generate JSON Schema from Zod at call time
+function getParametersTopic(): string {
+  const jsonSchema = zodToJsonSchema(CreatePdfSchema, "CreatePdfInput");
+  return `pdfcrowd_create_pdf input schema:
+You MUST pass all required parameters when calling pdfcrowd_create_pdf. Never call it with empty or incomplete arguments.
+Example: pdfcrowd_create_pdf({html: "<h1>Hello</h1>", output_path: "output.pdf"})
+${JSON.stringify(jsonSchema, null, 2)}`;
+}
+
+const DYNAMIC_TOPICS: Record<string, () => string> = {
+  parameters: getParametersTopic
+};
+
+const VALID_TOPICS = [...Object.keys(TOPICS), ...Object.keys(DYNAMIC_TOPICS)];
 
 // Register the main tool
 server.registerTool(
@@ -55,9 +68,9 @@ server.registerTool(
     title: "Create PDF",
       description: `Export any content (including charts) to PDF.
 If input isn't HTML, create a well-designed layout first.
-Do NOT pass PDFCrowd API parameters - this tool has its own schema.
-output_path is required - generate a descriptive filename if not specified.
+IMPORTANT: Call pdfcrowd_info(topic: "parameters") to get the full input schema.
 IMPORTANT: Before creating HTML, first call pdfcrowd_info(topic: "html_layout") to get the layout guidelines.
+Do NOT pass PDFCrowd API parameters - this tool has its own schema.
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
 `,
@@ -117,7 +130,10 @@ server.registerTool(
     // Return topic-specific content if requested
     if (params.topic) {
       if (params.topic in TOPICS) {
-        return { content: [{ type: "text", text: TOPICS[params.topic as TopicKey] }] };
+        return { content: [{ type: "text", text: TOPICS[params.topic] }] };
+      }
+      if (params.topic in DYNAMIC_TOPICS) {
+        return { content: [{ type: "text", text: DYNAMIC_TOPICS[params.topic]() }] };
       }
       // Invalid topic - return guidance
       return {
