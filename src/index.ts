@@ -10,7 +10,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
-import { CreatePdfSchema, type CreatePdfInput } from "./schemas/index.js";
+import { CreatePdfSchema, DEFAULT_MARGIN, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
 
@@ -26,12 +26,15 @@ const TOPICS = {
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
 - Content is auto-scaled to fit page width - avoid setting explicit container widths
 - Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
+- Use light backgrounds throughout (white/transparent for body) - dark themes render poorly in print/PDF
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs
+- Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
+- For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS (A4 portrait: 297mm, landscape: 210mm)
 - For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:

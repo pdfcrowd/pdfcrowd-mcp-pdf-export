@@ -3,6 +3,7 @@ import FormData from "form-data";
 import * as fs from "fs";
 import * as path from "path";
 import { VERSION } from "../version.js";
+import { DEFAULT_MARGIN } from "../schemas/index.js";
 
 const API_HOST = "api.pdfcrowd.com";
 const API_VERSION = "24.04";
@@ -225,9 +226,9 @@ function buildForm(options: CreatePdfOptions): FormData {
   if (options.orientation) {
     form.append("orientation", options.orientation);
   }
-  if (options.margins) {
+  {
     // Normalize decimal separator (comma to period) for the API
-    const marginValue = options.margins.replace(",", ".");
+    const marginValue = (options.margins || `${DEFAULT_MARGIN}mm`).replace(",", ".");
     form.append("margin_top", marginValue);
     form.append("margin_bottom", marginValue);
     form.append("margin_left", marginValue);

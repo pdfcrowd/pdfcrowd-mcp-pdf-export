@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const PAGE_SIZES = ["A3", "A4", "A5", "Letter"] as const;
 export const ORIENTATIONS = ["portrait", "landscape"] as const;
+export const DEFAULT_MARGIN = 10; // mm
 
 // Matches values like "1in", "10mm", "0.5cm", "1,5cm", "100px", "12pt"
 const MARGIN_REGEX = /^\d+([.,]\d+)?(in|mm|cm|px|pt)$/;
@@ -33,7 +34,7 @@ export const CreatePdfSchema = z.object({
     .default("portrait")
     .describe("Page orientation"),
   margins: marginSchema
-    .optional()
+    .default(`${DEFAULT_MARGIN}mm`)
     .describe("Page margins (e.g., 10mm, 1in, 0.5cm, or 0 for no margins)."),
   title: z.string()
     .optional()
