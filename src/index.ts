@@ -46,6 +46,7 @@ const TOPICS = {
 - When labels are long (package names, descriptions), always stack vertically
 - Sequence diagrams: use short aliases, keep combined alias text under ~60 chars across all participants
 - CSS isolation: generic rules can bleed into Mermaid SVGs - reset backgrounds/padding as needed
+- Node labels: no special chars (~/.#&) - they break parsing. Put paths/URLs in tables instead
 - Node line breaks: use <br> tags, not \\n
 
 You MUST use the following CSS/HTML template for diagrams.
