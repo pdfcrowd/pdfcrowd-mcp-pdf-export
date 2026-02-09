@@ -33,7 +33,7 @@ const TOPICS = {
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs or inline data URIs
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
-- For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS (A4 portrait: 297mm, landscape: 210mm)
+- For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS to 100vh;
 - For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:

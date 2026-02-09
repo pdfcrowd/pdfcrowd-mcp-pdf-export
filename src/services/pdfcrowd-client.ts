@@ -239,6 +239,7 @@ function buildForm(options: CreatePdfOptions): FormData {
   }
 
   // Default options
+  //form.append("content_viewport_width", "balanced");    
   //form.append("enable_pdf_forms", "on");
 
   return form;
