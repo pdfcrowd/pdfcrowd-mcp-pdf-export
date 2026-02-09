@@ -22,11 +22,10 @@ const server = new McpServer({
 // Topic content for pdfcrowd_info tool
 const TOPICS = {
   html_layout: `HTML Layout Guidelines for PDF Export:
-- All styling must be done in HTML/CSS - do not use tool parameters for styling
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
 - Content is auto-scaled to fit page width - avoid setting explicit container widths
 - Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
-- Use light backgrounds throughout (white/transparent for body) - dark themes render poorly in print/PDF
+- Use light backgrounds throughout ALL sections including cover/title pages (white/transparent for body) - dark/gradient backgrounds render poorly in print/PDF
 - Use 16px base font size
 - Use block flow for main structure (sections stack vertically)
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
@@ -39,13 +38,28 @@ const TOPICS = {
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
-- Init: mermaid.initialize({startOnLoad:true})
-- CRITICAL: Diagrams can break across pages. Prevent with:
-  - Wrap in container with break-inside:avoid
-  - Keep diagrams small (6-8 nodes max)
-  - Use flowchart LR for horizontal/compact layout
-  - Use break-before:page for large diagrams
-  - Split complex diagrams into multiple smaller ones
+- Init: mermaid.initialize({startOnLoad:true, theme:'neutral'})
+- Keep diagrams small (6-8 nodes max) - split complex ones into multiple diagrams
+- Width & legibility: diagrams are scaled to fit page width - too-wide diagrams become illegible. Always prefer vertical/top-down layouts. Only place nodes side-by-side when their combined label text is short (rough limit: ~60 characters total across a horizontal row). This applies everywhere: flowchart direction, subgraph direction, sequence participants, class entities, etc.
+- Always use flowchart TD (top-down) as the default direction, including inside subgraphs
+- Only use LR (left-right) when the horizontal row has 2-3 nodes with short labels (under ~20 chars each)
+- When labels are long (package names, descriptions), always stack vertically
+- Sequence diagrams: use short aliases, keep combined alias text under ~60 chars across all participants
+- CSS isolation: generic rules can bleed into Mermaid SVGs - reset backgrounds/padding as needed
+- Node line breaks: use <br> tags, not \\n
+
+You MUST use the following CSS/HTML template for diagrams.
+Replace page height and margins in max-height calc() with actual values being used (A4 portrait: 297mm, A4 landscape: 210mm, Letter portrait: 279.4mm, A3 portrait: 420mm).
+
+CSS:
+.diagram-wrap { break-inside:avoid; margin:16px 0 }
+.diagram-wrap .mermaid { display:block; width:100% }
+.diagram-wrap .mermaid svg { display:block; margin:0 auto; max-width:100%; height:auto; max-height:calc(<page-height> - 2*<margins>) }
+
+HTML per diagram:
+<div class="diagram-wrap"><div class="mermaid">
+DIAGRAM DEFINITION HERE
+</div></div>
 `
 } as Record<string, string>;
 
