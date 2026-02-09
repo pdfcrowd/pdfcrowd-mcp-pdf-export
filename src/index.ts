@@ -21,6 +21,7 @@ const server = new McpServer({
 // Topic content for pdfcrowd_info tool
 const TOPICS = {
   html_layout: `HTML Layout Guidelines for PDF Export:
+- All styling must be done in HTML/CSS - do not use tool parameters for styling
 - Reset default spacing: html,body{margin:0;padding:0} - content should start exactly at PDF margins
 - Content is auto-scaled to fit page width - avoid setting explicit container widths
 - Wrap code/logs/CLI output in <pre> to preserve whitespace and formatting
@@ -54,7 +55,8 @@ server.registerTool(
     title: "Create PDF",
       description: `Export any content (including charts) to PDF.
 If input isn't HTML, create a well-designed layout first.
-Use only parameters in this tool's schema, output_path is required.
+Do NOT pass PDFCrowd API parameters - this tool has its own schema.
+output_path is required - generate a descriptive filename if not specified.
 IMPORTANT: Before creating HTML, first call pdfcrowd_info(topic: "html_layout") to get the layout guidelines.
 
 On error: Read the error message carefully and follow its guidance. Report configuration issues to the user instead of trying other PDF tools.
