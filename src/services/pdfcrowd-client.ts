@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { VERSION } from "../version.js";
 import { DEFAULT_MARGIN, DEFAULT_VIEWPORT_WIDTH } from "../schemas/index.js";
+import { bundleAssets, type BundleResult } from "./asset-bundler.js";
 
 const API_HOST = "api.pdfcrowd.com";
 const API_VERSION = "24.04";
@@ -208,7 +209,7 @@ export interface CreatePdfOptions {
   title?: string;
 }
 
-function buildForm(options: CreatePdfOptions): FormData {
+function buildForm(options: CreatePdfOptions, zipMainFilename?: string): FormData {
   const form = new FormData();
 
   // Set input source
@@ -238,6 +239,9 @@ function buildForm(options: CreatePdfOptions): FormData {
   if (options.title) {
     form.append("title", options.title);
   }
+  if (zipMainFilename) {
+    form.append("zip_main_filename", zipMainFilename);
+  }
 
   // Viewport and fit mode
   const viewportWidth = options.viewportWidth ? `${options.viewportWidth}px` : DEFAULT_VIEWPORT_WIDTH;
@@ -253,54 +257,80 @@ export async function createPdf(options: CreatePdfOptions): Promise<ConversionRe
     return { success: false, error: `File not found: ${options.file}` };
   }
 
-  const { username, apiKey } = getCredentials();
-  let lastError: unknown;
-  let attempts = 0;
-
-  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
-    attempts = attempt;
-    try {
-      const form = buildForm(options);
-
-      const response = await axios.post(`${API_BASE_URL}/?errfmt=json`, form, {
-        auth: { username, password: apiKey },
-        headers: {
-          ...form.getHeaders(),
-          "User-Agent": USER_AGENT
-        },
-        responseType: "arraybuffer",
-        timeout: REQUEST_TIMEOUT_MS
-      });
-
-      // Ensure output directory exists
-      const dir = path.dirname(options.outputPath);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-
-      fs.writeFileSync(options.outputPath, response.data);
-
-      return {
-        success: true,
-        outputPath: path.resolve(options.outputPath),
-        metadata: parseMetadata(response.headers),
-        isDemo: isDemo(username)
-      };
-    } catch (error) {
-      lastError = error;
-
-      // Retry on 5xx errors (except on last attempt)
-      if (is5xxError(error) && attempt <= MAX_RETRIES) {
-        if (attempt > 1) {
-          await sleep(RETRY_DELAY_MS);
-        }
-        continue;
-      }
-
-      // Non-retryable error or last attempt
-      break;
+  // Detect and bundle local assets referenced in HTML
+  let bundle: BundleResult | null = null;
+  try {
+    if (options.html) {
+      bundle = await bundleAssets(options.html, process.cwd(), "index.html");
+    } else if (options.file) {
+      const htmlContent = fs.readFileSync(options.file, "utf-8");
+      const baseDir = path.dirname(path.resolve(options.file));
+      bundle = await bundleAssets(htmlContent, baseDir, path.basename(options.file));
     }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Failed to bundle local assets: ${error instanceof Error ? error.message : String(error)}`
+    };
   }
 
-  return handleApiError(lastError, attempts);
+  // When assets were bundled, send the zip instead of raw HTML/file
+  const effectiveOptions: CreatePdfOptions = bundle
+    ? { ...options, html: undefined, file: bundle.zipPath }
+    : options;
+
+  try {
+    const { username, apiKey } = getCredentials();
+    let lastError: unknown;
+    let attempts = 0;
+
+    for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+      attempts = attempt;
+      try {
+        const form = buildForm(effectiveOptions, bundle?.mainFilename);
+
+        const response = await axios.post(`${API_BASE_URL}/?errfmt=json`, form, {
+          auth: { username, password: apiKey },
+          headers: {
+            ...form.getHeaders(),
+            "User-Agent": USER_AGENT
+          },
+          responseType: "arraybuffer",
+          timeout: REQUEST_TIMEOUT_MS
+        });
+
+        // Ensure output directory exists
+        const dir = path.dirname(options.outputPath);
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+
+        fs.writeFileSync(options.outputPath, response.data);
+
+        return {
+          success: true,
+          outputPath: path.resolve(options.outputPath),
+          metadata: parseMetadata(response.headers),
+          isDemo: isDemo(username)
+        };
+      } catch (error) {
+        lastError = error;
+
+        // Retry on 5xx errors (except on last attempt)
+        if (is5xxError(error) && attempt <= MAX_RETRIES) {
+          if (attempt > 1) {
+            await sleep(RETRY_DELAY_MS);
+          }
+          continue;
+        }
+
+        // Non-retryable error or last attempt
+        break;
+      }
+    }
+
+    return handleApiError(lastError, attempts);
+  } finally {
+    bundle?.cleanup();
+  }
 }
