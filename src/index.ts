@@ -41,8 +41,9 @@ const TOPICS = {
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
 - Init: mermaid.initialize({startOnLoad:true, theme:'neutral'})
 - Keep diagrams small (6-8 nodes max) - split complex ones into multiple diagrams
-- Width & legibility: diagrams are scaled to fit page width - too-wide diagrams become illegible. Always prefer vertical/top-down layouts. Only place nodes side-by-side when their combined label text is short (rough limit: ~60 characters total across a horizontal row). This applies everywhere: flowchart direction, subgraph direction, sequence participants, class entities, etc.
-- Always use flowchart TD (top-down) as the default direction, including inside subgraphs
+- Width & legibility: diagrams are scaled to fit page width - too-wide diagrams become illegible. Always prefer vertical/top-down layouts. Only place nodes side-by-side when their combined label text is short (rough limit: ~60 characters total across a horizontal row). This applies everywhere: flowchart direction, sequence participants, class entities, etc.
+- Always use flowchart TD (top-down) as the default direction
+- NEVER use \`direction\` inside subgraphs - it causes syntax errors in Mermaid v11. Subgraphs inherit the parent flowchart direction
 - Only use LR (left-right) when the horizontal row has 2-3 nodes with short labels (under ~20 chars each)
 - When labels are long (package names, descriptions), always stack vertically
 - Sequence diagrams: use short aliases, keep combined alias text under ~60 chars across all participants
