@@ -1,0 +1,6 @@
+# output: local-assets.pdf
+# pages: =1
+# bytesize: >100000
+# contains: house
+---
+Create PDF containing `tests/prompt/fixtures/house.png` and its description. Save it to $OUTPUT_DIR/local-assets.pdf

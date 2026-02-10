@@ -4,13 +4,17 @@
 PDFCROWD_USERNAME ?= demo
 PDFCROWD_API_KEY ?= demo
 
-.PHONY: all build clean install run dev inspector test schema help npm-check npm-pack npm-publish npm-publish-dry
+.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all schema help npm-check npm-pack npm-publish npm-publish-dry
 
 all: build
 
 # Install dependencies
 install:
 	npm install
+
+# Install dev dependencies (vitest, etc.)
+install-dev:
+	npm install --include=dev
 
 # Build TypeScript to JavaScript
 build:
@@ -41,7 +45,18 @@ inspector: build
 	PDFCROWD_API_KEY=$(PDFCROWD_API_KEY) \
 	npx @modelcontextprotocol/inspector node dist/index.js
 
-# Quick test - convert example.com to PDF
+# Run unit tests (vitest)
+test-unit:
+	npx vitest run
+
+# Run prompt tests (requires claude CLI + MCP server configured)
+test-prompt: build
+	bash tests/prompt/run.sh $(TEST)
+
+# Run all tests
+test-all: test-unit test-prompt
+
+# Quick smoke test - convert example.com to PDF
 test: build
 	@echo "Testing PDF creation..."
 	@PDFCROWD_USERNAME=$(PDFCROWD_USERNAME) \
@@ -100,14 +115,18 @@ help:
 	@echo "PDFCrowd MCP Server"
 	@echo ""
 	@echo "Targets:"
-	@echo "  make install    - Install npm dependencies"
+	@echo "  make install     - Install npm dependencies"
+	@echo "  make install-dev - Install dev dependencies (vitest)"
 	@echo "  make build      - Build TypeScript to JavaScript"
 	@echo "  make clean      - Remove build artifacts and node_modules"
 	@echo "  make run        - Run the MCP server (stdio mode)"
 	@echo "  make dev        - Run in development mode with auto-reload"
 	@echo "  make inspector  - Run MCP Inspector for debugging"
-	@echo "  make test       - Quick test: convert example.com to PDF"
-	@echo "  make schema     - Show tool JSON schema"
+	@echo "  make test        - Quick smoke test: convert example.com to PDF"
+	@echo "  make test-unit   - Run unit tests (vitest)"
+	@echo "  make test-prompt - Run prompt tests (needs claude CLI + MCP)"
+	@echo "  make test-all    - Run unit + prompt tests"
+	@echo "  make schema      - Show tool JSON schema"
 	@echo ""
 	@echo "NPM publishing:"
 	@echo "  make npm-check       - Preview package contents"

@@ -1,0 +1,7 @@
+# output: html-layout.pdf
+# pages: =3
+# contains: Page 1
+# contains: Page 2
+# contains: Page 3
+---
+Create PDF with three pages, each page contains a lorem ipsum paragraph and is titled 'Page 1', 'Page 2', and 'Page 3'. Save it to $OUTPUT_DIR/html-layout.pdf.

@@ -1,0 +1,5 @@
+# output: hello-world.pdf
+# pages: =1
+# contains: Hello
+---
+Create full-bleed fancy hello world PDF. Save it to $OUTPUT_DIR/hello-world.pdf.

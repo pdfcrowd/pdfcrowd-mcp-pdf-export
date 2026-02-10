@@ -1,0 +1,6 @@
+# output: mermaid-flowchart.pdf
+# pages: >=1
+# not-contains: mermaid version
+---
+Create PDF visualizing the Linux boot process. Save it to $OUTPUT_DIR/mermaid-flowchart.pdf.
+
