@@ -56,7 +56,7 @@ Replace page height and margins in max-height calc() with actual values being us
 CSS:
 .diagram-wrap { break-inside:avoid; margin:16px 0 }
 .diagram-wrap .mermaid { display:block; width:100% }
-.diagram-wrap .mermaid svg { display:block; margin:0 auto; max-width:100%; height:auto; max-height:calc(<page-height> - 2*<margins>) }
+.diagram-wrap .mermaid svg { display:block; margin:0 auto; max-width:100%; height:auto; max-height:calc(<page-height> - 2*<margins> - 40px) }
 
 HTML per diagram:
 <div class="diagram-wrap"><div class="mermaid">
