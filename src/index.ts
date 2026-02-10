@@ -36,7 +36,6 @@ const TOPICS = {
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
 - For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS to 100vh;
 - For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
-- HTML code <= 1024kb - use the "html" parameter, otherwise save html to a temp file, use the "file" parameter, delete the file after PDF is generated
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
@@ -83,9 +82,16 @@ function getParametersTopic(): string {
   const jsonSchema = zodToJsonSchema(CreatePdfSchema, "CreatePdfInput");
   return `pdfcrowd_create_pdf input schema:
 You MUST pass all required parameters when calling pdfcrowd_create_pdf. Never call it with empty or incomplete arguments.
-Example:
+Examples:
+ - pdfcrowd_create_pdf({file: "<tmpdir>/pdfcrowd-mcp-<generated-uuid>.html", output_path: "output.pdf"})
  - pdfcrowd_create_pdf({html: "<h1>Hello</h1>", output_path: "output.pdf"})
- - pdfcrowd_create_pdf({file: "/tmp/pdfcrowd-mcp-uuid.html", output_path: "output.pdf"})
+
+Agent-generated HTML:
+- Agent-generated HTML <= 512 bytes: use the "html" parameter directly
+- Agent-generated HTML > 512 bytes:
+  1. Save HTML to a temp file. MUST invent a UUID for the filename — never a descriptive name. Format: <tmpdir>/pdfcrowd-mcp-<generated-uuid>.html
+  2. Pass the file path via the "file" parameter
+  3. IMPORTANT: Always delete the temp file after the PDF is generated
 
 ${JSON.stringify(jsonSchema, null, 2)}`;
 }
