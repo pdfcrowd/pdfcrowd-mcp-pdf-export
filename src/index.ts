@@ -36,6 +36,7 @@ const TOPICS = {
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
 - For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS to 100vh;
 - For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
+- HTML code <= 1024kb - use the "html" parameter, otherwise save html to a temp file, use the "file" parameter, delete the file after PDF is generated
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
@@ -82,7 +83,10 @@ function getParametersTopic(): string {
   const jsonSchema = zodToJsonSchema(CreatePdfSchema, "CreatePdfInput");
   return `pdfcrowd_create_pdf input schema:
 You MUST pass all required parameters when calling pdfcrowd_create_pdf. Never call it with empty or incomplete arguments.
-Example: pdfcrowd_create_pdf({html: "<h1>Hello</h1>", output_path: "output.pdf"})
+Example:
+ - pdfcrowd_create_pdf({html: "<h1>Hello</h1>", output_path: "output.pdf"})
+ - pdfcrowd_create_pdf({file: "/tmp/pdfcrowd-mcp-uuid.html", output_path: "output.pdf"})
+
 ${JSON.stringify(jsonSchema, null, 2)}`;
 }
 
