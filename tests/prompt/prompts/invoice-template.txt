@@ -1,0 +1,5 @@
+# output: invoice-template.pdf
+# pages: =1
+# contains: project milestone
+---
+Merge `tests/prompt/fixtures/invoice_template.html` and `tests/prompt/fixtures/invoice_sample_data.json` and save it to $OUTPUT_DIR/invoice-template.pdf

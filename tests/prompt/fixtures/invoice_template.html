@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice {{invoice_number}}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #333;
+    background: #fff;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .invoice {
+    max-width: 800px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #333;
+    margin-bottom: 24px;
+  }
+
+  .brand-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .brand-tagline {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .invoice-badge {
+    text-align: right;
+  }
+
+  .invoice-badge h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .invoice-badge .invoice-number {
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  /* ── Info grid ── */
+  .info-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .info-block {
+    flex: 1;
+  }
+
+  .info-block label {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #333;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+  }
+
+  .info-block p {
+    font-size: 12px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  .info-block .name {
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  /* ── Dates ── */
+  .dates {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .date-item {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .date-item .label {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .date-item .value {
+    color: #444;
+  }
+
+  /* ── Table ── */
+  .items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+  }
+
+  .items-table thead th {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #333;
+    background: #f0f0f0;
+    padding: 8px 10px;
+    text-align: left;
+    border-top: 2px solid #333;
+    border-bottom: 1px solid #999;
+  }
+
+  .items-table thead th.num {
+    text-align: right;
+  }
+
+  .items-table thead th:last-child {
+    text-align: right;
+  }
+
+  .items-table tbody tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .items-table tbody tr:last-child {
+    border-bottom: 1px solid #999;
+  }
+
+  .items-table td {
+    padding: 8px 10px;
+    vertical-align: top;
+    font-size: 12px;
+  }
+
+  .items-table td.item-name {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .items-table td.item-desc {
+    color: #666;
+  }
+
+  .items-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Totals ── */
+  .totals-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 32px;
+  }
+
+  .totals-box {
+    width: 280px;
+  }
+
+  .totals-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 12px;
+    color: #444;
+  }
+
+  .totals-row .value {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .totals-row.discount .value {
+    color: #444;
+  }
+
+  .totals-divider {
+    height: 1px;
+    background: #ddd;
+    margin: 2px 0;
+  }
+
+  .totals-row.grand-total {
+    padding: 8px 0;
+    margin-top: 4px;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .totals-row.grand-total .value {
+    font-weight: bold;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .footer-block {
+    flex: 1;
+  }
+
+  .footer-block label {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .footer-block p {
+    font-size: 11px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .thank-you {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 12px;
+    font-style: italic;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+<div class="invoice">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-name">{{company_name}}</div>
+      <div class="brand-tagline">{{company_tagline}}</div>
+    </div>
+    <div class="invoice-badge">
+      <h1>Invoice</h1>
+      <div class="invoice-number">#{{invoice_number}}</div>
+    </div>
+  </div>
+
+  <!-- From / To / Payment -->
+  <div class="info-grid">
+    <div class="info-block">
+      <label>From</label>
+      <p class="name">{{from_name}}</p>
+      <p>{{from_address_line1}}<br>{{from_address_line2}}</p>
+      <p>{{from_email}}</p>
+      <p>{{from_phone}}</p>
+    </div>
+    <div class="info-block">
+      <label>Bill To</label>
+      <p class="name">{{to_name}}</p>
+      <p>{{to_address_line1}}<br>{{to_address_line2}}</p>
+      <p>{{to_email}}</p>
+      <p>{{to_phone}}</p>
+    </div>
+    <div class="info-block">
+      <label>Payment Details</label>
+      <p>{{payment_method}}</p>
+      <p>{{payment_details}}</p>
+    </div>
+  </div>
+
+  <!-- Dates -->
+  <div class="dates">
+    <div class="date-item">
+      <span class="label">Issue Date:</span>
+      <span class="value">{{issue_date}}</span>
+    </div>
+    <div class="date-item">
+      <span class="label">Due Date:</span>
+      <span class="value">{{due_date}}</span>
+    </div>
+  </div>
+
+  <!-- Line Items -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width: 5%">#</th>
+        <th style="width: 30%">Item</th>
+        <th style="width: 25%">Description</th>
+        <th class="num" style="width: 10%">Qty</th>
+        <th class="num" style="width: 15%">Unit Price</th>
+        <th class="num" style="width: 15%">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- BEGIN_ITEMS -->
+      <tr>
+        <td>{{item_index}}</td>
+        <td class="item-name">{{item_name}}</td>
+        <td class="item-desc">{{item_description}}</td>
+        <td class="num">{{item_quantity}}</td>
+        <td class="num">{{item_unit_price}}</td>
+        <td class="num">{{item_amount}}</td>
+      </tr>
+      <!-- END_ITEMS -->
+    </tbody>
+  </table>
+
+  <!-- Totals -->
+  <div class="totals-section">
+    <div class="totals-box">
+      <div class="totals-row">
+        <span>Subtotal</span>
+        <span class="value">{{subtotal}}</span>
+      </div>
+      <div class="totals-row discount">
+        <span>Discount ({{discount_percent}})</span>
+        <span class="value">&minus;{{discount_amount}}</span>
+      </div>
+      <div class="totals-divider"></div>
+      <div class="totals-row">
+        <span>Tax ({{tax_percent}})</span>
+        <span class="value">{{tax_amount}}</span>
+      </div>
+      <div class="totals-divider"></div>
+      <div class="totals-row grand-total">
+        <span>Total Due</span>
+        <span class="value">{{total_due}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-block">
+      <label>Notes</label>
+      <p>{{notes}}</p>
+    </div>
+    <div class="footer-block">
+      <label>Terms &amp; Conditions</label>
+      <p>{{terms}}</p>
+    </div>
+  </div>
+
+  <div class="thank-you">Thank you for your business.</div>
+
+</div>
+</body>
+</html>
