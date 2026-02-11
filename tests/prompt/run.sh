@@ -107,7 +107,7 @@ for test_file in "${tests[@]}"; do
   # Run claude
   echo "  Running claude -p (timeout: ${test_timeout}s)..."
   claude_exit=0
-  timeout --foreground "${test_timeout}s" claude -p "$prompt_body" > "$OUTPUT_DIR/${test_name}.log" 2>&1 || claude_exit=$?
+  timeout --foreground "${test_timeout}s" claude -p "$prompt_body" --allowedTools "Bash,Read,Edit,Write" > "$OUTPUT_DIR/${test_name}.log" 2>&1 || claude_exit=$?
 
   if (( claude_exit != 0 )); then
     echo "  FAIL: claude exited with code $claude_exit"
