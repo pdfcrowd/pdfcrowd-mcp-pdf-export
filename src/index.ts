@@ -37,6 +37,7 @@ const TOPICS = {
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
 - For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS to 100vh;
 - For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
+- Non-ASCII text: when generating HTML in languages with diacritics or non-Latin scripts (e.g. Czech, French, German, Chinese), always use proper Unicode characters — never strip or transliterate them to ASCII. Include <meta charset="UTF-8"> in the HTML head
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
