@@ -1,3 +1,9 @@
+
+[![Claude Code](https://img.shields.io/badge/Claude_Code-supported-blue)](https://claude.ai/download)
+[![Codex](https://img.shields.io/badge/Codex_CLI-supported-blue)](https://github.com/openai/codex)
+[![Gemini CLI](https://img.shields.io/badge/Gemini_CLI-supported-blue)](https://github.com/google-gemini/gemini-cli)
+[![npm version](https://img.shields.io/npm/v/pdfcrowd-mcp-pdf-export)](https://www.npmjs.com/package/pdfcrowd-mcp-pdf-export)
+
 # PDF Export for AI Agents
 
 MCP server for PDF export. Install locally, use from Claude Code, Codex, Gemini CLI, or any MCP-compatible client.
