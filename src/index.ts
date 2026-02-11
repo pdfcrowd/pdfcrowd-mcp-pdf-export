@@ -33,7 +33,7 @@ const TOPICS = {
 - Cover/title pages: white/transparent background, break-after:page. No min-height:100vh - it overflows to two pages
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
 - TOC: only if requested or appropriate; entries must link to section anchors
-- Images: absolute URLs, inline data URIs, or local file paths (auto-bundled) - call pdfcrowd_info(topic: "local_assets") when using local files
+- Images: absolute URLs, inline data URIs, or local file absolute paths (auto-bundled) - call pdfcrowd_info(topic: "local_assets") when using local files
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
 - For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS to 100vh;
 - For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
@@ -67,16 +67,15 @@ DIAGRAM DEFINITION HERE
 </div></div>
 `,
   local_assets: `Local Assets in PDF Export:
-- Reference local files (images, CSS, JS) with relative paths - auto-detected and bundled on upload
+- ALWAYS use absolute paths for local files (images, CSS, JS) - auto-detected and bundled on upload
 - Supported: <img src>, <link href>, <script src>, <video/audio/source src>, CSS url()
 - CSS files parsed recursively for url() references
-- Resolve paths from: working directory (html param) or HTML file's directory (file param)
 - External URLs (http/https) and data URIs load normally - not bundled
 - No extra parameters needed - fully automatic when local refs detected
 
 When user provides local images or assets for PDF:
-1. Design HTML with relative paths to the assets
-2. Call pdfcrowd_create_pdf with html param - bundling is automatic
+1. Design HTML with absolute paths to the assets (e.g. src="/home/user/project/image.png")
+2. Call pdfcrowd_create_pdf - bundling is automatic
 `
 } as Record<string, string>;
 

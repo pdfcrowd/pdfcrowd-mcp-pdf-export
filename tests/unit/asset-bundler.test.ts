@@ -98,6 +98,28 @@ describe('bundleAssets', () => {
     }
   });
 
+  it('rewrites absolute path refs to _ext/ in HTML', async () => {
+    const externalDir = fs.mkdtempSync(path.join(os.tmpdir(), 'external-'));
+    try {
+      const extImgPath = path.join(externalDir, 'photo.png');
+      fs.writeFileSync(extImgPath, TINY_PNG);
+
+      const html = `<h1>Test</h1><img src="${extImgPath}">`;
+      const result = await bundleAssets(html, tmpDir, 'index.html');
+      expect(result).not.toBeNull();
+      if (!result) return;
+
+      const zipStr = fs.readFileSync(result.zipPath).toString('binary');
+      // The rewritten HTML should reference _ext/photo.png, not the absolute path
+      expect(zipStr).toContain('_ext/photo.png');
+      expect(zipStr).not.toContain(extImgPath);
+
+      result.cleanup();
+    } finally {
+      fs.rmSync(externalDir, { recursive: true, force: true });
+    }
+  });
+
   it('cleanup removes temp dir and zip', async () => {
     fs.writeFileSync(path.join(tmpDir, 'img.png'), TINY_PNG);
     const html = '<img src="img.png">';
