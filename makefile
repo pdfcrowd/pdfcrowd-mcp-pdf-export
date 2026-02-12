@@ -4,7 +4,7 @@
 PDFCROWD_USERNAME ?= demo
 PDFCROWD_API_KEY ?= demo
 
-.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all schema help npm-check npm-pack npm-publish npm-publish-dry
+.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all schema help npm-check npm-pack npm-publish npm-publish-dry changelog
 
 all: build
 
@@ -110,6 +110,10 @@ npm-publish: build
 	@read -p "Continue? [y/N] " confirm && [ "$$confirm" = "y" ] || exit 1
 	npm publish
 
+# Generate changelog entry for unreleased changes (uses claude CLI)
+changelog:
+	bash scripts/update-changelog.sh
+
 # Show help
 help:
 	@echo "PDFCrowd MCP Server"
@@ -133,6 +137,9 @@ help:
 	@echo "  make npm-pack        - Create tarball without publishing"
 	@echo "  make npm-publish-dry - Dry run publish (validates without publishing)"
 	@echo "  make npm-publish     - Publish to npm registry"
+	@echo ""
+	@echo "Changelog:"
+	@echo "  make changelog       - Generate changelog entry (uses claude CLI)"
 	@echo ""
 	@echo "Environment variables:"
 	@echo "  PDFCROWD_USERNAME - PDFCrowd username (default: demo)"

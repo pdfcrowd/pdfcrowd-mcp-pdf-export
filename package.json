@@ -13,6 +13,7 @@
     "build": "tsc",
     "test": "vitest run",
     "clean": "rm -rf dist",
+    "version": "bash scripts/finalize-changelog.sh",
     "prepublishOnly": "npm run build"
   },
   "engines": {

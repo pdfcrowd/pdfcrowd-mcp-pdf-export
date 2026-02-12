@@ -44,14 +44,22 @@ make dev        # run with auto-reload
 Version is read from `package.json` at runtime - single source of truth.
 
 ```bash
-# Bump version (choose one)
+# 1. Generate changelog (uses claude CLI to summarize git changes)
+make changelog
+
+# 2. Review and edit CHANGELOG.md as needed
+
+# 3. Bump version (choose one) — this finalizes the changelog header and commits
 npm version patch   # 1.0.0 → 1.0.1
 npm version minor   # 1.0.0 → 1.1.0
 npm version major   # 1.0.0 → 2.0.0
 
-# Build
+# 4. Build
 npm run build
 ```
+
+The `npm version` command automatically replaces the "Next release" header in
+CHANGELOG.md with the actual version and date, and includes it in the version commit.
 
 ## Publishing to npm
 
