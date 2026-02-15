@@ -42,11 +42,30 @@ claude -p "Analyze git commits from last week, create a sprint
 
 ## Configuration
 
-### Claude Code / Gemini CLI
+**Prerequisites:** [Node.js](https://nodejs.org/) 18 or later.
 
-Add to your config file:
-- Claude Code: `~/.mcp.json`
-- Gemini CLI: `~/.gemini/settings.json`
+### Claude Code
+
+Add to `~/.claude.json` (user scope) or `.mcp.json` in your project root (project scope):
+
+```json
+{
+  "mcpServers": {
+    "pdfcrowd-export-pdf": {
+      "command": "npx",
+      "args": ["-y", "pdfcrowd-mcp-pdf-export"],
+      "env": {
+        "PDFCROWD_USERNAME": "demo",
+        "PDFCROWD_API_KEY": "demo"
+      }
+    }
+  }
+}
+```
+
+### Gemini CLI
+
+Add to `~/.gemini/settings.json`:
 
 ```json
 {
@@ -82,24 +101,15 @@ PDFCROWD_API_KEY = "demo"
 ### Notes
 
 - Restart your CLI after configuration to load the server
-- Timeout is set to 65 seconds because complex PDFs may take up to 60 seconds to generate
 
 ## Credentials
 
 - Default: produces watermarked PDFs (no signup needed)
 - Remove watermarks: get credentials at [pdfcrowd.com/pricing](https://pdfcrowd.com/pricing/)
 
-## Privacy Notice
+## Privacy
 
-PDFs are generated remotely on PDFCrowd servers. When you use this tool:
-
-- **Data transmitted**: Your content (HTML, URL, or file) is sent to PDFCrowd servers via HTTPS
-- **Data retention**: Content is retained only during processing, then permanently deleted (typically within 30 minutes)
-- **No copies**: No copies of your content are kept or shared
-- **Location**: PDFCrowd is based in the Czech Republic (EU), GDPR applies
-- **Privacy policy**: [pdfcrowd.com/privacy](https://pdfcrowd.com/privacy/)
-
-For sensitive or confidential content, review PDFCrowd's privacy policy before use.
+Your source code never leaves your machine — only the rendered document is sent to [PDFCrowd](https://pdfcrowd.com/privacy/) for PDF conversion.
 
 ## Development
 
