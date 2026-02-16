@@ -56,7 +56,7 @@
   ],
   "license": "MIT",
   "author": "PDFCrowd <support@pdfcrowd.com> (https://pdfcrowd.com)",
-  "homepage": "https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export#readme",
+  "homepage": "https://pdfcrowd.com/mcp-pdf-export/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export.git"

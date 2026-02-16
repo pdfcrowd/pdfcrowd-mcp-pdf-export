@@ -6,39 +6,20 @@
 
 # PDF Export for AI Agents
 
-MCP server for PDF export. Install locally, use from Claude Code, Codex, Gemini CLI, or any MCP-compatible client.
+Well-designed PDFs from a single prompt. Describe what you need, get a professional document.
 
-Reports, documentation, code reviews — anything your AI can describe, it can now export.
+Powered by [PDFCrowd](https://pdfcrowd.com). [Learn more →](https://pdfcrowd.com/mcp-pdf-export/)
 
-Powered by [PDFCrowd](https://pdfcrowd.com).
+## Example
 
-## What You Can Do
-
-**The pattern:**
 ```
-[Analyze/Read something] → [Create PDF with specific structure] → [Save to path]
+Analyze this project and create a comprehensive architecture overview PDF.
+Include component diagrams and data flow. Save to architecture-overview.pdf
 ```
 
-**Document your API from code:**
-```
-Read the route handlers in src/api/, generate API documentation
-with endpoints, parameters, and examples. Save to docs/api.pdf
-```
+[![Architecture Overview](https://raw.githubusercontent.com/pdfcrowd/pdfcrowd-mcp-pdf-export/master/assets/architecture-overview.png)](https://raw.githubusercontent.com/pdfcrowd/pdfcrowd-mcp-pdf-export/master/assets/architecture-overview.pdf)
 
-**Document your database schema:**
-```
-Explore the codebase and create a PDF documenting
-all DB tables, relationships, column types, and indexes. Save to docs/schema.pdf
-```
-
-**Automate reports (non-interactive):**
-```bash
-claude -p "Analyze git commits from last week, create a sprint
-  summary PDF at reports/sprint.pdf" && \
-  mail -s "Sprint Report" team@company.com -A reports/sprint.pdf
-```
-
-[More example prompts →](SAMPLE_PROMPTS.md)
+[More examples →](https://pdfcrowd.com/mcp-pdf-export/)
 
 ## Configuration
 
@@ -104,16 +85,11 @@ PDFCROWD_API_KEY = "demo"
 
 ## Credentials
 
-- Default: produces watermarked PDFs (no signup needed)
-- Remove watermarks: get credentials at [pdfcrowd.com/pricing](https://pdfcrowd.com/pricing/)
+The `demo` credentials work immediately, no signup needed. Output includes a watermark. For watermark-free PDFs, [sign up](https://pdfcrowd.com/pricing/) for personal credentials.
 
 ## Privacy
 
 Your source code never leaves your machine — only the rendered document is sent to [PDFCrowd](https://pdfcrowd.com/privacy/) for PDF conversion.
-
-## Development
-
-See [DEVELOPMENT.md](DEVELOPMENT.md) for building from source, testing, and contributing.
 
 ## License
 
