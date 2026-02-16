@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 1.1.0 (2026-02-16)
 
 ### Features
 - Add automatic local asset bundling for PDF export
