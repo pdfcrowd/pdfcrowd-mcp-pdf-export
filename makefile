@@ -4,7 +4,7 @@
 PDFCROWD_USERNAME ?= demo
 PDFCROWD_API_KEY ?= demo
 
-.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all schema help npm-check npm-pack npm-publish npm-publish-dry changelog
+.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all schema help npm-check npm-pack npm-publish npm-publish-dry changelog registry-publish registry-login
 
 all: build
 
@@ -114,6 +114,14 @@ npm-publish: build
 changelog:
 	bash scripts/update-changelog.sh
 
+# Login to MCP registry (required once, token is cached)
+registry-login:
+	mcp-publisher login github
+
+# Publish to MCP registry (requires prior login)
+registry-publish:
+	npm run publish-registry
+
 # Show help
 help:
 	@echo "PDFCrowd MCP Server"
@@ -140,6 +148,10 @@ help:
 	@echo ""
 	@echo "Changelog:"
 	@echo "  make changelog       - Generate changelog entry (uses claude CLI)"
+	@echo ""
+	@echo "MCP Registry:"
+	@echo "  make registry-login   - Login to MCP registry (one-time)"
+	@echo "  make registry-publish - Publish to MCP registry"
 	@echo ""
 	@echo "Environment variables:"
 	@echo "  PDFCROWD_USERNAME - PDFCrowd username (default: demo)"

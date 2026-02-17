@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pdfcrowd/pdfcrowd-mcp-pdf-export",
+  "title": "PDFCrowd PDF Export",
+  "description": "Create polished, professional PDFs from a single prompt. Documentation, reports, charts, and more.",
+  "websiteUrl": "https://pdfcrowd.com/mcp-pdf-export/",
+  "repository": {
+    "url": "https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export",
+    "source": "github"
+  },
+  "version": "1.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "pdfcrowd-mcp-pdf-export",
+      "version": "1.1.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "PDFCROWD_USERNAME",
+          "description": "PDFCrowd username. Use 'demo' to try without signup (adds watermark).",
+          "isRequired": true
+        },
+        {
+          "name": "PDFCROWD_API_KEY",
+          "description": "PDFCrowd API key. Use 'demo' to try without signup (adds watermark).",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

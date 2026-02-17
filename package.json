@@ -1,8 +1,9 @@
 {
   "name": "pdfcrowd-mcp-pdf-export",
   "version": "1.1.0",
-  "description": "PDF Export for AI agents - export any content to PDF with AI-powered formatting. Works with Claude Code, Codex CLI, and other MCP clients.",
+  "description": "PDF Export for AI agents - Well-designed PDFs from a single prompt. Describe what you need, get a professional document.",
   "type": "module",
+  "mcpName": "io.github.pdfcrowd/pdfcrowd-mcp-pdf-export",
   "main": "dist/index.js",
   "bin": {
     "pdfcrowd-mcp-pdf-export": "dist/index.js"
@@ -13,7 +14,8 @@
     "build": "tsc",
     "test": "vitest run",
     "clean": "rm -rf dist",
-    "version": "bash scripts/finalize-changelog.sh",
+    "version": "bash scripts/finalize-changelog.sh && bash scripts/sync-server-version.sh",
+    "publish-registry": "mcp-publisher publish",
     "prepublishOnly": "npm run build"
   },
   "engines": {

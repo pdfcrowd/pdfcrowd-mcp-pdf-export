@@ -58,8 +58,10 @@ npm version major   # 1.0.0 → 2.0.0
 npm run build
 ```
 
-The `npm version` command automatically replaces the "Next release" header in
-CHANGELOG.md with the actual version and date, and includes it in the version commit.
+The `npm version` command automatically:
+- Replaces the "Next release" header in CHANGELOG.md with the version and date
+- Syncs the version into `server.json` (for the MCP registry)
+- Commits and tags
 
 ## Publishing to npm
 
@@ -67,4 +69,13 @@ CHANGELOG.md with the actual version and date, and includes it in the version co
 make npm-check       # preview package contents
 make npm-publish-dry # dry run (validates without publishing)
 make npm-publish     # publish to npm registry
+```
+
+## Publishing to MCP Registry
+
+After publishing to npm, publish to the [MCP registry](https://registry.modelcontextprotocol.io/) separately:
+
+```bash
+make registry-login   # one-time GitHub auth (token is cached)
+make registry-publish # publish server.json to the registry
 ```
