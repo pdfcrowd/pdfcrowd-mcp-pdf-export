@@ -1,5 +1,11 @@
 # Changelog
 
+## Next release
+
+- Added MCP registry publishing support with `server.json` configuration and version sync script
+- Updated development tooling: new makefile targets for registry publishing and version synchronization
+
+
 ## 1.1.0 (2026-02-16)
 
 ### Features
