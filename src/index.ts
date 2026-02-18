@@ -32,6 +32,14 @@ const TOPICS = {
 - Flex/grid only inside non-breaking units (cards, headers) - they break poorly across pages
 - Cover/title pages: white/transparent background, break-after:page. No min-height:100vh - it overflows to two pages
 - break-inside:avoid and break-before:page work on block elements only (div, section, figure, table)
+- Pagination CSS: always include these rules for clean page breaks:
+  h1,h2,h3,h4,h5,h6{break-after:avoid;break-inside:avoid}
+  p{orphans:3;widows:3}
+  thead{display:table-header-group} tfoot{display:table-footer-group} tr{break-inside:avoid}
+  figure,pre,blockquote,.info-box,.card{break-inside:avoid}
+  img{break-inside:avoid} figure figcaption{break-before:avoid}
+  li{break-inside:avoid} dt{break-after:avoid} dd{break-before:avoid}
+- Keep break-inside:avoid blocks under ~60% page height - oversized blocks are ignored by the engine and break awkwardly
 - TOC: only if requested or appropriate; entries must link to section anchors
 - Images: absolute URLs, inline data URIs, or local file absolute paths (auto-bundled) - call pdfcrowd_info(topic: "local_assets") when using local files
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
@@ -41,9 +49,8 @@ const TOPICS = {
 `,
   mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
-- Init: mermaid.initialize({startOnLoad:true, theme:'neutral'})
-- Keep diagrams small (6-8 nodes max) - split complex ones into multiple diagrams
-- Width & legibility: diagrams are scaled to fit page width - too-wide diagrams become illegible. Always prefer vertical/top-down layouts. Only place nodes side-by-side when their combined label text is short (rough limit: ~60 characters total across a horizontal row). This applies everywhere: flowchart direction, sequence participants, class entities, etc.
+- Keep diagrams small (6-8 nodes max) - split complex flows into multiple diagrams with connecting labels rather than one tall chart
+- Width & legibility: diagrams are scaled to fit page width - too-wide diagrams become illegible. Always prefer vertical/top-down layouts. In TD flowcharts, sibling nodes at the same depth share one horizontal row - many siblings = wide diagram. Max 3-4 children per node. For more siblings, group into intermediate categories or split into separate diagrams. Only place nodes side-by-side when their combined label text is short (rough limit: ~60 characters total across a horizontal row). This applies everywhere: flowchart direction, sequence participants, class entities, etc.
 - Always use flowchart TD (top-down) as the default direction
 - NEVER use \`direction\` inside subgraphs - it causes syntax errors in Mermaid v11. Subgraphs inherit the parent flowchart direction
 - Only use LR (left-right) when the horizontal row has 2-3 nodes with short labels (under ~20 chars each)
@@ -52,19 +59,39 @@ const TOPICS = {
 - CSS isolation: generic rules can bleed into Mermaid SVGs - reset backgrounds/padding as needed
 - Node labels: no special chars (~/.#&) - they break parsing. Put paths/URLs in tables instead
 - Node line breaks: use <br> tags, not \\n
+- If adding a title or caption to a diagram, place it inside the diagram-wrap div so break-inside:avoid keeps them together with the diagram
 
-You MUST use the following CSS/HTML template for diagrams.
-Replace page height and margins in max-height calc() with actual values being used (A4 portrait: 297mm, A4 landscape: 210mm, Letter portrait: 279.4mm, A3 portrait: 420mm).
+You MUST use the following CSS/HTML/JS template for diagrams.
+Replace page height and margins in the JS constants with actual values being used (A4 portrait: 297, A4 landscape: 210, Letter portrait: 279.4, A3 portrait: 420).
 
 CSS:
 .diagram-wrap { break-inside:avoid; margin:16px 0 }
 .diagram-wrap .mermaid { display:block; width:100% }
-.diagram-wrap .mermaid svg { display:block; margin:0 auto; max-width:100%; height:auto; max-height:calc(<page-height> - 2*<margins> - 40px) }
+.diagram-wrap .mermaid svg { display:block; margin:0 auto; max-width:100%; height:auto; }
 
-HTML per diagram:
+HTML per diagram (heading/title inside diagram-wrap is optional but must be inside when present):
 <div class="diagram-wrap"><div class="mermaid">
 DIAGRAM DEFINITION HERE
 </div></div>
+
+JS (place after mermaid.min.js) — dynamically adjusts SVG max-height to account for headings/titles inside each diagram-wrap:
+<script>
+mermaid.initialize({startOnLoad:false, theme:'neutral'});
+var defined_page_height_mm = <page-height-in-mm>;
+var defined_margins_mm = <margins-in-mm>;
+var page_content_px = (defined_page_height_mm - 2 * defined_margins_mm) * 3.7795 * .8;
+mermaid.run().then(function() {
+  document.querySelectorAll('.diagram-wrap').forEach(function(wrap) {
+    var svg = wrap.querySelector('svg');
+    if (!svg) return;
+    var non_svg_height = 0;
+    Array.from(wrap.children).forEach(function(child) {
+      if (!child.classList || !child.classList.contains('mermaid')) non_svg_height += child.offsetHeight;
+    });
+    svg.style.maxHeight = (page_content_px - non_svg_height - 20) + 'px';
+  });
+});
+</script>
 `,
   local_assets: `Local Assets in PDF Export:
 - ALWAYS use absolute paths for local files (images, CSS, JS) - auto-detected and bundled on upload
