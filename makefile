@@ -4,7 +4,7 @@
 PDFCROWD_USERNAME ?= demo
 PDFCROWD_API_KEY ?= demo
 
-.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all schema help npm-check npm-pack npm-publish npm-publish-dry changelog registry-publish registry-login
+.PHONY: all build clean install install-dev run dev inspector test test-unit test-prompt test-all test-npx schema help npm-check npm-pack npm-publish npm-publish-dry changelog registry-publish registry-login
 
 all: build
 
@@ -76,6 +76,23 @@ test: build
 		}).catch(e => { console.error('Error:', e); process.exit(1); }); \
 	"
 
+# Test npx install - verifies the package loads without missing modules
+test-npx: build
+	@echo "Packing tarball..."
+	@npm pack --quiet
+	@echo "Testing npx install..."
+	@TARBALL=$$(ls -t pdfcrowd-mcp-pdf-export-*.tgz | head -1); \
+	LOG=$$(mktemp); \
+	PDFCROWD_USERNAME=demo PDFCROWD_API_KEY=demo \
+	timeout 10 npx --yes "./$${TARBALL}" > "$$LOG" 2>&1; \
+	if grep -q "PDF Export MCP server running" "$$LOG"; then \
+		echo "OK: server loaded successfully"; \
+	else \
+		echo "FAIL: server did not start"; cat "$$LOG"; \
+		rm -f "$$LOG" "$${TARBALL}"; exit 1; \
+	fi; \
+	rm -f "$$LOG" "$${TARBALL}"
+
 # Show tool schema as JSON
 schema: build
 	@node -e " \
@@ -138,6 +155,7 @@ help:
 	@echo "  make test-unit   - Run unit tests (vitest)"
 	@echo "  make test-prompt - Run prompt tests (needs claude CLI + MCP)"
 	@echo "  make test-all    - Run unit + prompt tests"
+	@echo "  make test-npx    - Test npx install loads without missing modules"
 	@echo "  make schema      - Show tool JSON schema"
 	@echo ""
 	@echo "NPM publishing:"
