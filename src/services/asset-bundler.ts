@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
-import archiver from "archiver";
+import yazl from "yazl";
 
 export interface BundleResult {
   zipPath: string;
@@ -179,26 +179,24 @@ export async function bundleAssets(
 
   await new Promise<void>((resolve, reject) => {
     const output = fs.createWriteStream(zipPath);
-    const archive = archiver("zip", { zlib: { level: 5 } });
+    const archive = new yazl.ZipFile();
 
     output.on("close", resolve);
     output.on("error", reject);
-    archive.on("error", reject);
 
-    archive.pipe(output);
-
-    archive.append(rewrittenHtml, { name: mainFilename });
+    archive.addBuffer(Buffer.from(rewrittenHtml, "utf-8"), mainFilename);
 
     for (const asset of allAssets) {
       const rewrittenCss = cssRewrites.get(asset.diskPath);
       if (rewrittenCss !== undefined) {
-        archive.append(rewrittenCss, { name: asset.zipPath });
+        archive.addBuffer(Buffer.from(rewrittenCss, "utf-8"), asset.zipPath);
       } else {
-        archive.file(asset.diskPath, { name: asset.zipPath });
+        archive.addFile(asset.diskPath, asset.zipPath);
       }
     }
 
-    archive.finalize();
+    archive.outputStream.pipe(output);
+    archive.end();
   });
 
   return {
