@@ -49,7 +49,7 @@ inspector: build
 test-unit:
 	npx vitest run
 
-# Run prompt tests (requires claude CLI + MCP server configured)
+# Run prompt tests (requires claude CLI)
 test-prompt: build
 	bash tests/prompt/run.sh $(TEST)
 

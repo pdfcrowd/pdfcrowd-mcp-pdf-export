@@ -13,7 +13,6 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PROMPTS_DIR="$SCRIPT_DIR/prompts"
 OUTPUT_DIR="$SCRIPT_DIR/output"
 CHECK_PDF="$SCRIPT_DIR/check-pdf.sh"
-EXPECTED_PATH="$PROJECT_DIR/dist/index.js"
 DEFAULT_TIMEOUT=300
 
 # ── Prechecks ────────────────────────────────────────────────
@@ -27,13 +26,38 @@ for cmd in claude pdfinfo pdftotext; do
   fi
 done
 
-echo "Checking MCP server configuration..."
-if ! claude mcp list 2>&1 | grep -q "$EXPECTED_PATH"; then
-  echo "ERROR: MCP server not configured or not pointing to $EXPECTED_PATH"
-  echo "Run:  claude mcp add pdfcrowd-mcp-pdf-export -- node $EXPECTED_PATH"
+# ── Pack tarball ─────────────────────────────────────────────
+
+echo "Packing tarball..."
+TARBALL=$(cd "$PROJECT_DIR" && npm pack --quiet 2>/dev/null)
+TARBALL_PATH="$PROJECT_DIR/$TARBALL"
+
+if [[ ! -f "$TARBALL_PATH" ]]; then
+  echo "ERROR: npm pack failed"
   exit 1
 fi
-echo "MCP server found."
+
+# ── MCP config ───────────────────────────────────────────────
+
+MCP_CONFIG=$(mktemp --suffix=.json)
+trap 'rm -f "$MCP_CONFIG" "$TARBALL_PATH"' EXIT
+
+cat > "$MCP_CONFIG" <<MCPEOF
+{
+  "mcpServers": {
+    "pdfcrowd-export-pdf": {
+      "command": "npx",
+      "args": ["-y", "$TARBALL_PATH"],
+      "env": {
+        "PDFCROWD_USERNAME": "${PDFCROWD_USERNAME:-demo}",
+        "PDFCROWD_API_KEY": "${PDFCROWD_API_KEY:-demo}"
+      }
+    }
+  }
+}
+MCPEOF
+
+CLAUDE_MCP_FLAGS=(--strict-mcp-config --mcp-config "$MCP_CONFIG")
 
 # ── Determine tests ─────────────────────────────────────────
 
@@ -107,7 +131,7 @@ for test_file in "${tests[@]}"; do
   # Run claude
   echo "  Running claude -p (timeout: ${test_timeout}s)..."
   claude_exit=0
-  timeout --foreground "${test_timeout}s" claude -p "$prompt_body" --allowedTools "Bash,Read,Edit,Write" > "$OUTPUT_DIR/${test_name}.log" 2>&1 || claude_exit=$?
+  timeout --foreground "${test_timeout}s" claude -p "$prompt_body" "${CLAUDE_MCP_FLAGS[@]}" --allowedTools "Bash,Read,Edit,Write" > "$OUTPUT_DIR/${test_name}.log" 2>&1 || claude_exit=$?
 
   if (( claude_exit != 0 )); then
     echo "  FAIL: claude exited with code $claude_exit"
