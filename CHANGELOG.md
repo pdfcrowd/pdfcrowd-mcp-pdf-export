@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 1.1.2 (2026-02-18)
 
 ### Fixes
 

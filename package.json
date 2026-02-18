@@ -1,6 +1,6 @@
 {
   "name": "pdfcrowd-mcp-pdf-export",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "PDF Export for AI agents - Well-designed PDFs from a single prompt. Describe what you need, get a professional document.",
   "type": "module",
   "mcpName": "io.github.pdfcrowd/pdfcrowd-mcp-pdf-export",
@@ -29,7 +29,7 @@
     "zod": "^3.23.8",
     "zod-to-json-schema": "^3.25.1"
   },
-"devDependencies": {
+  "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/yazl": "^3.3.0",
     "tsx": "^4.19.2",
