@@ -1,11 +1,20 @@
 # Changelog
 
+## Next release
+
+### Fixes
+
+- Replaced `archiver` with `yazl` for ZIP bundling to fix npx install failure
+
+### Improvements
+
+- Added `make test-npx` target and updated prompt tests to use local npx tarball instead of global MCP config
+
+
 ## 1.1.1 (2026-02-17)
 
 - Added MCP registry publishing support with `server.json` configuration and version sync script
 - Updated development tooling: new makefile targets for registry publishing and version synchronization
-
-
 ## 1.1.0 (2026-02-16)
 
 ### Features
