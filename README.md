@@ -27,18 +27,20 @@ Include component diagrams and data flow. Save to architecture-overview.pdf
 
 ### Claude Code
 
-Add to `~/.claude.json` (user scope) or `.mcp.json` in your project root (project scope):
+Run once to register the server:
+
+```
+claude mcp add --scope user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
+```
+
+Or add manually to `~/.claude.json` (user scope) or `.mcp.json` in your project root (project scope):
 
 ```json
 {
   "mcpServers": {
     "pdfcrowd-export-pdf": {
       "command": "npx",
-      "args": ["-y", "pdfcrowd-mcp-pdf-export"],
-      "env": {
-        "PDFCROWD_USERNAME": "demo",
-        "PDFCROWD_API_KEY": "demo"
-      }
+      "args": ["-y", "pdfcrowd-mcp-pdf-export"]
     }
   }
 }
@@ -46,7 +48,11 @@ Add to `~/.claude.json` (user scope) or `.mcp.json` in your project root (projec
 
 ### Gemini CLI
 
-Add to `~/.gemini/settings.json`:
+```
+gemini mcp add -s user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
+```
+
+Or add manually to `~/.gemini/settings.json`:
 
 ```json
 {
@@ -54,10 +60,6 @@ Add to `~/.gemini/settings.json`:
     "pdfcrowd-export-pdf": {
       "command": "npx",
       "args": ["-y", "pdfcrowd-mcp-pdf-export"],
-      "env": {
-        "PDFCROWD_USERNAME": "demo",
-        "PDFCROWD_API_KEY": "demo"
-      },
       "timeout": 65000
     }
   }
@@ -66,26 +68,35 @@ Add to `~/.gemini/settings.json`:
 
 ### Codex CLI
 
-Add to `~/.codex/config.toml`:
+```
+codex mcp add pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
+```
+
+Or add manually to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.pdfcrowd-export-pdf]
 command = "npx"
 args = ["-y", "pdfcrowd-mcp-pdf-export"]
 tool_timeout_sec = 65
-
-[mcp_servers.pdfcrowd-export-pdf.env]
-PDFCROWD_USERNAME = "demo"
-PDFCROWD_API_KEY = "demo"
 ```
 
 ### Notes
 
 - Restart your CLI after configuration to load the server
 
-## Credentials
+## Personal Credentials
 
-The `demo` credentials work immediately, no signup needed. Output includes a watermark. For watermark-free PDFs, [sign up](https://pdfcrowd.com/pricing/) for personal credentials.
+Get started right away — no credentials or signup needed. Output includes a watermark. For watermark-free PDFs, [sign up](https://pdfcrowd.com/pricing/) for personal credentials.
+
+Personal credentials can be set in:
+
+1. **Config file** `~/.pdfcrowd-mcp`:
+   ```
+   PDFCROWD_USERNAME=your_username
+   PDFCROWD_API_KEY=your_api_key
+   ```
+2. **Environment variables** `PDFCROWD_USERNAME` and `PDFCROWD_API_KEY`.
 
 ## Privacy
 

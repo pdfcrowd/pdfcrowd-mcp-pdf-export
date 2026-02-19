@@ -245,15 +245,6 @@ describe('createPdf', () => {
     expect(mockedPost).not.toHaveBeenCalled();
   });
 
-  it('throws on missing credentials', async () => {
-    delete process.env.PDFCROWD_USERNAME;
-    delete process.env.PDFCROWD_API_KEY;
-
-    await expect(
-      createPdf({ html: '<h1>Test</h1>', outputPath: path.join(tmpDir, 'out.pdf') }),
-    ).rejects.toThrow('Missing credentials');
-  });
-
   it('sends correct form fields to API', async () => {
     const appendSpy = vi.spyOn(FormData.prototype, 'append');
     mockedPost.mockResolvedValueOnce(makeSuccessResponse());

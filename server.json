@@ -21,13 +21,13 @@
       "environmentVariables": [
         {
           "name": "PDFCROWD_USERNAME",
-          "description": "PDFCrowd username. Use 'demo' to try without signup (adds watermark).",
-          "isRequired": true
+          "description": "PDFCrowd username for watermark-free output. Can also be set in ~/.pdfcrowd-mcp.",
+          "isRequired": false
         },
         {
           "name": "PDFCROWD_API_KEY",
-          "description": "PDFCrowd API key. Use 'demo' to try without signup (adds watermark).",
-          "isRequired": true,
+          "description": "PDFCrowd API key for watermark-free output. Can also be set in ~/.pdfcrowd-mcp.",
+          "isRequired": false,
           "isSecret": true
         }
       ]

@@ -13,6 +13,7 @@ import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { loadCredentialFile } from "./credentials.js";
 import { CreatePdfSchema, DEFAULT_MARGIN, DEFAULT_VIEWPORT_WIDTH, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
@@ -130,6 +131,17 @@ mermaid.run().then(function() {
 When user provides local images or assets for PDF:
 1. Design HTML with absolute paths to the assets (e.g. src="/home/user/project/image.png")
 2. Call pdfcrowd_create_pdf - bundling is automatic
+`,
+  credentials: `PDFCrowd Credentials:
+Configuration is resolved in this order (highest priority first):
+1. Config file: ~/.pdfcrowd-mcp
+2. Environment variables: PDFCROWD_USERNAME, PDFCROWD_API_KEY
+
+Config file format (~/.pdfcrowd-mcp):
+  PDFCROWD_USERNAME=your_username
+  PDFCROWD_API_KEY=your_api_key
+
+To get personal credentials: pdfcrowd.com/pricing
 `
 } as Record<string, string>;
 
@@ -205,8 +217,7 @@ On error: Read the error message carefully and follow its guidance. Report confi
     const lines = [
       `PDF saved to: ${result.outputPath}`,
       `Size: ${(result.metadata.outputSize / 1024).toFixed(1)} KB`,
-      result.metadata.pageCount ? `Pages: ${result.metadata.pageCount}` : null,
-      result.isDemo ? `\nDemo mode (watermarked). Upgrade: pdfcrowd.com/pricing` : null
+      result.metadata.pageCount ? `Pages: ${result.metadata.pageCount}` : null
     ].filter(Boolean);
 
     return {
@@ -262,15 +273,10 @@ server.registerTool(
 
 // Main
 async function main() {
-  const username = process.env.PDFCROWD_USERNAME;
-  const apiKey = process.env.PDFCROWD_API_KEY;
-
-  if (!username || !apiKey) {
-    console.error("ERROR: PDFCROWD_USERNAME and PDFCROWD_API_KEY required");
-    console.error('  export PDFCROWD_USERNAME="your_username"');
-    console.error('  export PDFCROWD_API_KEY="your_api_key"');
-    process.exit(1);
-  }
+  // Precedence: config file > environment variables > demo fallback
+  const fileCredentials = loadCredentialFile();
+  process.env.PDFCROWD_USERNAME = fileCredentials.username || process.env.PDFCROWD_USERNAME || "demo";
+  process.env.PDFCROWD_API_KEY = fileCredentials.apiKey || process.env.PDFCROWD_API_KEY || "demo";
 
   cleanupTempFiles();
 

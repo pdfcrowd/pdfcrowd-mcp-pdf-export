@@ -112,9 +112,9 @@ function getErrorGuidance(status: number, reasonCode: number): string {
       return "Tell the user their PDFCrowd license has expired. Do not retry with other PDF tools.";
     }
     if (reasonCode === 106) {
-      return "Tell the user to check PDFCROWD_USERNAME and PDFCROWD_API_KEY in ~/.mcp.json. Do not retry with other PDF tools.";
+      return "Tell the user to check PDFCROWD_USERNAME and PDFCROWD_API_KEY in ~/.pdfcrowd-mcp or environment variables. Do not retry with other PDF tools.";
     }
-    return "Tell the user to check their PDFCrowd credentials in ~/.mcp.json. Do not retry with other PDF tools.";
+    return "Tell the user to check their PDFCrowd credentials in ~/.pdfcrowd-mcp or environment variables. Do not retry with other PDF tools.";
   }
 
   if (status === 403 || reasonCode === 105) {
