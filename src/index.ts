@@ -8,12 +8,39 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
+import { readdirSync, statSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
+import * as path from "node:path";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { CreatePdfSchema, DEFAULT_MARGIN, DEFAULT_VIEWPORT_WIDTH, type CreatePdfInput } from "./schemas/index.js";
 import { createPdf } from "./services/pdfcrowd-client.js";
 import { VERSION } from "./version.js";
+
+const TEMPFILE_PATTERN = "pdfcrowd-mcp-*.html";
+const TEMPFILE_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
+
+function cleanupTempFiles(): void {
+  const tmp = tmpdir();
+  const prefix = TEMPFILE_PATTERN.split("*")[0]; // "pdfcrowd-mcp-"
+  const suffix = TEMPFILE_PATTERN.split("*")[1]; // ".html"
+  let entries: string[];
+  try {
+    entries = readdirSync(tmp);
+  } catch {
+    return;
+  }
+  for (const name of entries) {
+    if (!name.startsWith(prefix) || !name.endsWith(suffix)) continue;
+    const file = path.join(tmp, name);
+    try {
+      const stat = statSync(file);
+      if (Date.now() - stat.mtimeMs > TEMPFILE_MAX_AGE_MS) {
+        unlinkSync(file);
+      }
+    } catch { /* ignore errors */ }
+  }
+}
 
 const server = new McpServer({
   name: "PDF Export",
@@ -110,18 +137,18 @@ When user provides local images or assets for PDF:
 function getParametersTopic(): string {
   const jsonSchema = zodToJsonSchema(CreatePdfSchema, "CreatePdfInput");
   const tmp = tmpdir();
+  const tempfileFormat = `${tmp}/${TEMPFILE_PATTERN.replace("*", "<random-hex>")}`;
   return `pdfcrowd_create_pdf input schema:
 You MUST pass all required parameters when calling pdfcrowd_create_pdf. Never call it with empty or incomplete arguments.
 Examples:
- - pdfcrowd_create_pdf({file: "${tmp}/pdfcrowd-mcp-<random-hex>.html", output_path: "output.pdf"})
+ - pdfcrowd_create_pdf({file: "${tempfileFormat}", output_path: "output.pdf"})
  - pdfcrowd_create_pdf({html: "<h1>Hello</h1>", output_path: "output.pdf"})
 
 Agent-generated HTML:
 - Agent-generated HTML <= 512 bytes: use the "html" parameter directly
 - Agent-generated HTML > 512 bytes:
-  1. Save HTML to a temp file in ${tmp}/. Replace <random-hex> with an 8-character hex string you invent — do not run any commands to generate it. Format: ${tmp}/pdfcrowd-mcp-<random-hex>.html
+  1. Save HTML to a temp file in ${tmp}/. Replace <random-hex> with an 8-character hex string you invent — do not run any commands to generate it. Format: ${tempfileFormat}
   2. Pass the file path via the "file" parameter
-  3. IMPORTANT: Always delete the temp file after the PDF is generated
 
 ${JSON.stringify(jsonSchema, null, 2)}`;
 }
@@ -154,6 +181,8 @@ On error: Read the error message carefully and follow its guidance. Report confi
     }
   },
   async (params: CreatePdfInput) => {
+    cleanupTempFiles();
+
     const result = await createPdf({
       html: params.html,
       url: params.url,
@@ -242,6 +271,8 @@ async function main() {
     console.error('  export PDFCROWD_API_KEY="your_api_key"');
     process.exit(1);
   }
+
+  cleanupTempFiles();
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
