@@ -1,0 +1,6 @@
+{
+  "pdfcrowd-export-pdf": {
+    "command": "npx",
+    "args": ["-y", "pdfcrowd-mcp-pdf-export"]
+  }
+}

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 #
-# sync-server-version.sh — Sync server.json version with package.json
+# sync-server-version.sh — Sync version across server.json and plugin.json
 #
 # Called by the npm "version" lifecycle hook. Reads the new version
-# from package.json and updates both version fields in server.json.
+# from package.json and updates version fields in server.json and
+# .claude-plugin/plugin.json.
 
 set -eu
 
@@ -24,3 +25,11 @@ sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/g" "$SERVER_JSON"
 git add "$SERVER_JSON"
 
 echo "server.json synced to version $version"
+
+PLUGIN_JSON="$PROJECT_DIR/.claude-plugin/plugin.json"
+
+if [[ -f "$PLUGIN_JSON" ]]; then
+  sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/" "$PLUGIN_JSON"
+  git add "$PLUGIN_JSON"
+  echo "plugin.json synced to version $version"
+fi

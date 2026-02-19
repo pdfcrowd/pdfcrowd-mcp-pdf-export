@@ -1,0 +1,13 @@
+{
+  "name": "pdfcrowd-export-pdf",
+  "description": "PDF Export for AI agents - Well-designed PDFs from a single prompt. Describe what you need, get a professional document.",
+  "version": "1.1.2",
+  "author": {
+    "name": "PDFCrowd",
+    "url": "https://pdfcrowd.com"
+  },
+  "homepage": "https://pdfcrowd.com/mcp-pdf-export/",
+  "repository": "https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export",
+  "license": "MIT",
+  "keywords": ["pdf", "pdf-export", "pdfcrowd", "document-generation", "html-to-pdf"]
+}

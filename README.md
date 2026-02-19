@@ -27,7 +27,14 @@ Include component diagrams and data flow. Save to architecture-overview.pdf
 
 ### Claude Code
 
-Run once to register the server:
+**Option A — Install as a plugin:**
+
+```
+/plugin marketplace add pdfcrowd/pdfcrowd-mcp-pdf-export
+/plugin install pdfcrowd-export-pdf@pdfcrowd
+```
+
+**Option B — Register the MCP server directly:**
 
 ```
 claude mcp add --scope user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export

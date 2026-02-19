@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "pdfcrowd",
+  "metadata": {
+    "description": "PDF export tools for AI agents by PDFCrowd."
+  },
+  "owner": {
+    "name": "PDFCrowd",
+    "email": "support@pdfcrowd.com"
+  },
+  "plugins": [
+    {
+      "name": "pdfcrowd-export-pdf",
+      "description": "PDF Export for AI agents - Well-designed PDFs from a single prompt.",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://pdfcrowd.com/mcp-pdf-export/"
+    }
+  ]
+}
