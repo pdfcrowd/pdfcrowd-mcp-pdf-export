@@ -29,7 +29,7 @@ echo "server.json synced to version $version"
 PLUGIN_JSON="$PROJECT_DIR/.claude-plugin/plugin.json"
 
 if [[ -f "$PLUGIN_JSON" ]]; then
-  sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/" "$PLUGIN_JSON"
+  sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$version\"/g" "$PLUGIN_JSON"
   git add "$PLUGIN_JSON"
   echo "plugin.json synced to version $version"
 fi

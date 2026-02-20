@@ -295,14 +295,17 @@ async function main() {
     process.env.PDFCROWD_API_KEY = "demo";
   }
 
+  const warnings: string[] = [];
   if (hasPartialFile) {
     const missing = fileCredentials.username ? "PDFCROWD_API_KEY" : "PDFCROWD_USERNAME";
-    credentialWarning = `~/.pdfcrowd-mcp is missing ${missing}. Both PDFCROWD_USERNAME and PDFCROWD_API_KEY are required. File ignored.`;
-    console.error(`Warning: ${credentialWarning}`);
+    warnings.push(`~/.pdfcrowd-mcp is missing ${missing}. Both PDFCROWD_USERNAME and PDFCROWD_API_KEY are required. File ignored.`);
   }
   if (hasPartialEnv && !hasFile) {
     const missing = origEnvUser ? "PDFCROWD_API_KEY" : "PDFCROWD_USERNAME";
-    credentialWarning = `Env var ${missing} is not set. Both PDFCROWD_USERNAME and PDFCROWD_API_KEY are required. Env ignored.`;
+    warnings.push(`Env var ${missing} is not set. Both PDFCROWD_USERNAME and PDFCROWD_API_KEY are required. Env ignored.`);
+  }
+  if (warnings.length > 0) {
+    credentialWarning = warnings.join(" ");
     console.error(`Warning: ${credentialWarning}`);
   }
 

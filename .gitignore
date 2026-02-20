@@ -27,3 +27,6 @@ npm-debug.log*
 # Prompt test output
 tests/prompt/output/
 
+# Registry tokens
+.mcpregistry_*_token
+
