@@ -27,20 +27,20 @@ Include component diagrams and data flow. Save to architecture-overview.pdf
 
 ### Claude Code
 
-**Option A — Install as a plugin:**
+**Option A — Install as a plugin (Recommended):**
 
 ```
 /plugin marketplace add pdfcrowd/pdfcrowd-mcp-pdf-export
 /plugin install pdfcrowd-export-pdf@pdfcrowd
 ```
 
-**Option B — Register the MCP server directly:**
+**Option B — Register the MCP server:**
 
 ```
 claude mcp add --scope user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
 ```
 
-Or add manually to `~/.claude.json` (user scope) or `.mcp.json` in your project root (project scope):
+Or add the equivalent JSON to `~/.claude.json` (user scope) or `.mcp.json` (project scope):
 
 ```json
 {
@@ -48,26 +48,6 @@ Or add manually to `~/.claude.json` (user scope) or `.mcp.json` in your project 
     "pdfcrowd-export-pdf": {
       "command": "npx",
       "args": ["-y", "pdfcrowd-mcp-pdf-export"]
-    }
-  }
-}
-```
-
-### Gemini CLI
-
-```
-gemini mcp add -s user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
-```
-
-Or add manually to `~/.gemini/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "pdfcrowd-export-pdf": {
-      "command": "npx",
-      "args": ["-y", "pdfcrowd-mcp-pdf-export"],
-      "timeout": 65000
     }
   }
 }
@@ -85,7 +65,25 @@ Or add manually to `~/.codex/config.toml`:
 [mcp_servers.pdfcrowd-export-pdf]
 command = "npx"
 args = ["-y", "pdfcrowd-mcp-pdf-export"]
-tool_timeout_sec = 65
+```
+
+### Gemini CLI
+
+```
+gemini mcp add -s user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
+```
+
+Or add manually to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "pdfcrowd-export-pdf": {
+      "command": "npx",
+      "args": ["-y", "pdfcrowd-mcp-pdf-export"]
+    }
+  }
+}
 ```
 
 ### Notes

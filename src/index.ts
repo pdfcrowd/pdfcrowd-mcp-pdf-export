@@ -20,6 +20,7 @@ import { VERSION } from "./version.js";
 
 const TEMPFILE_PATTERN = "pdfcrowd-mcp-*.html";
 const TEMPFILE_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
+let credentialWarning: string | null = null;
 
 function cleanupTempFiles(): void {
   const tmp = tmpdir();
@@ -217,7 +218,8 @@ On error: Read the error message carefully and follow its guidance. Report confi
     const lines = [
       `PDF saved to: ${result.outputPath}`,
       `Size: ${(result.metadata.outputSize / 1024).toFixed(1)} KB`,
-      result.metadata.pageCount ? `Pages: ${result.metadata.pageCount}` : null
+      result.metadata.pageCount ? `Pages: ${result.metadata.pageCount}` : null,
+      credentialWarning ? `\nWarning: ${credentialWarning}` : null
     ].filter(Boolean);
 
     return {
@@ -274,9 +276,35 @@ server.registerTool(
 // Main
 async function main() {
   // Precedence: config file > environment variables > demo fallback
+  // Each source is used as a pair — partial credentials are not mixed across sources.
   const fileCredentials = loadCredentialFile();
-  process.env.PDFCROWD_USERNAME = fileCredentials.username || process.env.PDFCROWD_USERNAME || "demo";
-  process.env.PDFCROWD_API_KEY = fileCredentials.apiKey || process.env.PDFCROWD_API_KEY || "demo";
+  const hasFile = fileCredentials.username && fileCredentials.apiKey;
+  const hasPartialFile = !hasFile && (fileCredentials.username || fileCredentials.apiKey);
+  const origEnvUser = process.env.PDFCROWD_USERNAME;
+  const origEnvKey = process.env.PDFCROWD_API_KEY;
+  const hasEnv = origEnvUser && origEnvKey;
+  const hasPartialEnv = !hasEnv && (origEnvUser || origEnvKey);
+
+  if (hasFile) {
+    process.env.PDFCROWD_USERNAME = fileCredentials.username;
+    process.env.PDFCROWD_API_KEY = fileCredentials.apiKey;
+  } else if (hasEnv) {
+    // keep existing env vars
+  } else {
+    process.env.PDFCROWD_USERNAME = "demo";
+    process.env.PDFCROWD_API_KEY = "demo";
+  }
+
+  if (hasPartialFile) {
+    const missing = fileCredentials.username ? "PDFCROWD_API_KEY" : "PDFCROWD_USERNAME";
+    credentialWarning = `~/.pdfcrowd-mcp is missing ${missing}. Both PDFCROWD_USERNAME and PDFCROWD_API_KEY are required. File ignored.`;
+    console.error(`Warning: ${credentialWarning}`);
+  }
+  if (hasPartialEnv && !hasFile) {
+    const missing = origEnvUser ? "PDFCROWD_API_KEY" : "PDFCROWD_USERNAME";
+    credentialWarning = `Env var ${missing} is not set. Both PDFCROWD_USERNAME and PDFCROWD_API_KEY are required. Env ignored.`;
+    console.error(`Warning: ${credentialWarning}`);
+  }
 
   cleanupTempFiles();
 

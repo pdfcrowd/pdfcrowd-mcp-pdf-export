@@ -16,18 +16,15 @@ To use your local build, update your MCP config to point to the built file:
   "mcpServers": {
     "pdfcrowd-export-pdf": {
       "command": "node",
-      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"],
-      "env": {
-        "PDFCROWD_USERNAME": "demo",
-        "PDFCROWD_API_KEY": "demo"
-      },
-      "timeout": 65000
+      "args": ["/FULL/PATH/TO/pdfcrowd-mcp-pdf-export/dist/index.js"]
     }
   }
 }
 ```
 
 Replace `/FULL/PATH/TO/` with the actual path to your clone.
+
+Credentials are resolved automatically: `~/.pdfcrowd-mcp` config file > environment variables > built-in demo. No `env` block is needed in the MCP config for development — the demo credentials are used by default.
 
 ## Make Targets
 
