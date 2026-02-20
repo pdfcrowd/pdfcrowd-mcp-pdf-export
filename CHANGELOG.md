@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 1.2.0 (2026-02-20)
 
 ### Features
 - Add Claude Code plugin and marketplace support with plugin descriptors
