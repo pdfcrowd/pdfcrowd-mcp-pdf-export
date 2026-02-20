@@ -12,7 +12,10 @@
     {
       "name": "pdfcrowd-export-pdf",
       "description": "PDF Export — well-designed PDFs from a single prompt. Describe what you need, get a professional document. Architecture overviews, reports, documentation, diagrams, and more. Supports local images and assets. Works instantly — no signup required.",
-      "source": "./",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/pdfcrowd/pdfcrowd-mcp-pdf-export.git"
+      },
       "category": "productivity",
       "homepage": "https://pdfcrowd.com/mcp-pdf-export/"
     }
