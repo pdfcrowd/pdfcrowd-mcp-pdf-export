@@ -70,7 +70,7 @@ args = ["-y", "pdfcrowd-mcp-pdf-export"]
 ### Gemini CLI
 
 ```
-gemini mcp add -s user pdfcrowd-export-pdf -- npx -y pdfcrowd-mcp-pdf-export
+gemini mcp add -s user pdfcrowd-export-pdf npx -y pdfcrowd-mcp-pdf-export
 ```
 
 Or add manually to `~/.gemini/settings.json`:
