@@ -73,10 +73,10 @@ const TOPICS = {
 - Images: absolute URLs, inline data URIs, or local file absolute paths (auto-bundled) - call pdfcrowd_info(topic: "local_assets") when using local files
 - Default page margins: ${DEFAULT_MARGIN}mm. Do not use page-level backgrounds or borders
 - For single-page full-bleed PDFs (certificates, posters): pass margins=0 to the tool, set page height in CSS to 100vh;
-- For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "mermaid_diagrams")
+- For diagrams, use Mermaid - IMPORTANT: first call pdfcrowd_info(topic: "diagrams")
 - Non-ASCII text: when generating HTML in languages with diacritics or non-Latin scripts (e.g. Czech, French, German, Chinese), always use proper Unicode characters — never strip or transliterate them to ASCII. Include <meta charset="UTF-8"> in the HTML head
 `,
-  mermaid_diagrams: `Mermaid Diagrams in Paginated PDFs:
+  diagrams: `Mermaid Diagrams in Paginated PDFs:
 - CDN: https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
 - Keep diagrams small (6-8 nodes max) - split complex flows into multiple diagrams with connecting labels rather than one tall chart
 - Width & legibility: diagrams are scaled to fit page width - too-wide diagrams become illegible. Always prefer vertical/top-down layouts. In TD flowcharts, sibling nodes at the same depth share one horizontal row - many siblings = wide diagram. Max 3-4 children per node. For more siblings, group into intermediate categories or split into separate diagrams. Only place nodes side-by-side when their combined label text is short (rough limit: ~60 characters total across a horizontal row). This applies everywhere: flowchart direction, sequence participants, class entities, etc.
