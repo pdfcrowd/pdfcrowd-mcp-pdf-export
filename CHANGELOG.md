@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 1.2.2 (2026-02-20)
 
 - Fixed plugin marketplace configuration to use git URL source for remote plugin updates
 
