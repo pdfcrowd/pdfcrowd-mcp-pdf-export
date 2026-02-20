@@ -1,5 +1,21 @@
 # Changelog
 
+## Next release
+
+### Features
+- Add Claude Code plugin and marketplace support with plugin descriptors
+- Support reading credentials from `~/.pdfcrowd-mcp` config file
+
+### Improvements
+- Persist agent temp files and add server-side cleanup
+- Rename `mermaid_diagrams` topic to `diagrams`
+- Improve marketplace plugin descriptions and clean up configuration docs
+
+### Fixes
+- Fix credential resolution and warning overwrite behavior
+- Add `.gitignore` entries for token files and fix version sync script
+
+
 ## 1.1.2 (2026-02-18)
 
 ### Fixes
@@ -9,8 +25,6 @@
 ### Improvements
 
 - Added `make test-npx` target and updated prompt tests to use local npx tarball instead of global MCP config
-
-
 ## 1.1.1 (2026-02-17)
 
 - Added MCP registry publishing support with `server.json` configuration and version sync script
