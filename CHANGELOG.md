@@ -1,5 +1,10 @@
 # Changelog
 
+## Next release
+
+- Fixed Gemini install command in documentation
+
+
 ## 1.2.0 (2026-02-20)
 
 ### Features
@@ -14,8 +19,6 @@
 ### Fixes
 - Fix credential resolution and warning overwrite behavior
 - Add `.gitignore` entries for token files and fix version sync script
-
-
 ## 1.1.2 (2026-02-18)
 
 ### Fixes
