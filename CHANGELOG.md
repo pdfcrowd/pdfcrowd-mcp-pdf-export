@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## 1.2.1 (2026-02-20)
 
 - Fixed Gemini install command in documentation
 

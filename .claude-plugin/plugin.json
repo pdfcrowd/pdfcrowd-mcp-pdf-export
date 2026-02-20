@@ -1,7 +1,7 @@
 {
   "name": "pdfcrowd-export-pdf",
   "description": "PDF Export for AI agents - Well-designed PDFs from a single prompt. Describe what you need, get a professional document.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "PDFCrowd",
     "url": "https://pdfcrowd.com"
