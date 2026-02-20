@@ -1,10 +1,13 @@
 # Changelog
 
+## Next release
+
+- Fixed plugin marketplace configuration to use git URL source for remote plugin updates
+
+
 ## 1.2.1 (2026-02-20)
 
 - Fixed Gemini install command in documentation
-
-
 ## 1.2.0 (2026-02-20)
 
 ### Features
